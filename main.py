@@ -674,9 +674,11 @@ UPLOADS_DIR.mkdir(exist_ok=True)
 OUTPUTS_DIR = api_temp_dir / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
-# 프론트엔드 폴더 (현재 파일 기준으로 동적 탐색, Mac 호환)
+# 프론트엔드 폴더 (빌드된 React SPA를 서빙, 없으면 소스 폴더 fallback)
 BASE_DIR = Path(__file__).resolve().parent
-FRONTEND_DIR = BASE_DIR / "frontend"
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
+FRONTEND_SRC = BASE_DIR / "frontend"
+FRONTEND_DIR = FRONTEND_DIST if FRONTEND_DIST.exists() else FRONTEND_SRC
 FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
 
 # 정적 파일 서빙
@@ -751,6 +753,13 @@ async def api_frame(video_path: str, time: float = 0.0):
         
     _, buffer = cv2.imencode('.jpg', frame)
     return StreamingResponse(io.BytesIO(buffer), media_type="image/jpeg")
+
+@app.get("/api/video")
+async def api_video(video_path: str):
+    """원본 영상 파일을 스트리밍 서빙합니다."""
+    if not os.path.exists(video_path):
+        raise HTTPException(status_code=404, detail="Video not found.")
+    return FileResponse(video_path, media_type="video/mp4")
 
 @app.get("/api/video_info")
 async def api_video_info(video_path: str):
@@ -880,15 +889,22 @@ async def api_youtube_recommend(req: RecommendRequest):
             "description": f"Gemini AI가 생성한 {req.target_description} 직캠입니다. #Shorts #Fancam"
         }
 
-# 루트 경로 접속 시 index.html 서빙
-@app.get("/")
-def read_index():
+# SPA 라우팅: 모든 프론트엔드 경로에 index.html 서빙
+def _serve_index():
     index_path = FRONTEND_DIR / "index.html"
     if index_path.exists():
         return FileResponse(index_path)
-    return HTMLResponse("<h1>API is running. Welcome!</h1><p>index.html was not found in frontend directory.</p>")
+    return HTMLResponse("<h1>API is running. Welcome!</h1><p>Build the frontend first: cd frontend && npm run build</p>")
 
-# 기타 프론트엔드 정적 파일 서빙
+@app.get("/")
+def read_index():
+    return _serve_index()
+
+@app.get("/converter")
+def read_converter():
+    return _serve_index()
+
+# 프론트엔드 정적 파일(JS, CSS, assets) 서빙
 app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
 
 if __name__ == "__main__":
