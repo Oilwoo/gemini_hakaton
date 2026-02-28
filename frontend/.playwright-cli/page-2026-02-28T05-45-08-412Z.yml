@@ -1,0 +1,121 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "FanCamAI" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e11]: FanCamAI
+      - generic [ref=e12]:
+        - link "기능" [ref=e13] [cursor=pointer]:
+          - /url: "#features"
+        - link "사용 방법" [ref=e14] [cursor=pointer]:
+          - /url: "#how-it-works"
+        - link "로드맵" [ref=e15] [cursor=pointer]:
+          - /url: "#future"
+        - link "직캠 만들기" [ref=e16] [cursor=pointer]:
+          - /url: /converter
+          - text: 직캠 만들기
+          - img [ref=e17]
+  - generic [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: Powered by Google Gemini AI
+        - heading "K-POP 무대 영상 하나로 AI 직캠을 만듭니다" [level=1] [ref=e24]:
+          - generic [ref=e25]: K-POP 무대 영상 하나로
+          - generic [ref=e26]: AI 직캠을 만듭니다
+        - paragraph [ref=e27]:
+          - text: 전체 무대 직캠에서 원하는 멤버를 클릭하면,
+          - text: AI가 자동으로 추적하여 개인 직캠을 생성합니다.
+        - generic [ref=e28]:
+          - link "직캠 만들러 가기" [ref=e29] [cursor=pointer]:
+            - /url: /converter
+            - text: 직캠 만들러 가기
+            - img [ref=e30]
+          - link "사용 방법 보기" [ref=e32] [cursor=pointer]:
+            - /url: "#how-it-works"
+      - generic [ref=e34]:
+        - generic [ref=e40]: FanCam AI Converter
+        - generic [ref=e41]:
+          - generic [ref=e46]: 원본 영상
+          - img [ref=e48]
+          - generic [ref=e52]: AI 직캠
+    - generic [ref=e54]:
+      - generic [ref=e56]:
+        - generic [ref=e57]: Features
+        - heading "왜 FanCam AI인가요?" [level=2] [ref=e58]
+        - paragraph [ref=e59]: AI 기술로 누구나 쉽게 프로 수준의 직캠을 만들 수 있습니다.
+      - generic [ref=e60]:
+        - generic [ref=e62]:
+          - img [ref=e64]
+          - heading "AI 멤버 추적" [level=3] [ref=e68]
+          - paragraph [ref=e69]: Google Gemini Vision AI가 영상 속 특정 멤버를 프레임 단위로 정밀 추적합니다.
+        - generic [ref=e71]:
+          - img [ref=e73]
+          - heading "원클릭 직캠 생성" [level=3] [ref=e75]
+          - paragraph [ref=e76]: 클릭 한 번으로 멤버별 세로형 직캠을 자동 생성합니다. 크롭, 안정화까지 자동 처리.
+        - generic [ref=e78]:
+          - img [ref=e80]
+          - heading "YouTube Shorts 등록" [level=3] [ref=e82]
+          - paragraph [ref=e83]: 생성된 직캠을 바로 YouTube Shorts로 업로드할 수 있습니다.
+    - generic [ref=e85]:
+      - generic [ref=e87]:
+        - generic [ref=e88]: How It Works
+        - heading "4단계로 완성되는 직캠" [level=2] [ref=e89]
+        - paragraph [ref=e90]: 복잡한 영상 편집 없이 몇 번의 클릭으로 직캠을 생성하세요.
+      - generic [ref=e91]:
+        - generic [ref=e93]:
+          - generic [ref=e94]: "01"
+          - generic [ref=e95]:
+            - img [ref=e97]
+            - heading "영상 업로드" [level=3] [ref=e99]
+            - paragraph [ref=e100]: YouTube URL을 붙여넣거나 영상 파일을 직접 업로드하세요.
+        - generic [ref=e102]:
+          - generic [ref=e103]: "02"
+          - generic [ref=e104]:
+            - img [ref=e106]
+            - heading "멤버 선택" [level=3] [ref=e110]
+            - paragraph [ref=e111]: 영상 프레임에서 추적할 멤버를 클릭으로 간편하게 지정합니다.
+        - generic [ref=e113]:
+          - generic [ref=e114]: "03"
+          - generic [ref=e115]:
+            - img [ref=e117]
+            - heading "AI 직캠 생성" [level=3] [ref=e120]
+            - paragraph [ref=e121]: Gemini AI가 멤버를 프레임별로 추적하여 고품질 직캠을 생성합니다.
+        - generic [ref=e123]:
+          - generic [ref=e124]: "04"
+          - generic [ref=e125]:
+            - img [ref=e127]
+            - heading "결과 확인 & 공유" [level=3] [ref=e129]
+            - paragraph [ref=e130]: 원본 대비 직캠을 확인하고 YouTube Shorts로 바로 올릴 수 있습니다.
+    - generic [ref=e132]:
+      - generic [ref=e134]:
+        - generic [ref=e135]: Roadmap
+        - heading "더 넓은 가능성" [level=2] [ref=e136]
+        - paragraph [ref=e137]: 직캠을 넘어, 모든 영상의 AI 자동 편집을 목표로 합니다.
+      - generic [ref=e138]:
+        - generic [ref=e140]:
+          - generic [ref=e141]: Coming Soon
+          - img [ref=e143]
+          - heading "스포츠 하이라이트" [level=3] [ref=e146]
+          - paragraph [ref=e147]: 축구, 농구 등 스포츠 경기 영상에서 자동으로 하이라이트를 생성합니다.
+        - generic [ref=e149]:
+          - generic [ref=e150]: Planned
+          - img [ref=e152]
+          - heading "자동 컷편집 & 크롭" [level=3] [ref=e158]
+          - paragraph [ref=e159]: 영상 종류에 관계없이 AI가 최적의 컷편집과 자동 크롭을 수행합니다.
+        - generic [ref=e161]:
+          - generic [ref=e162]: Vision
+          - img [ref=e164]
+          - heading "영상 편집 자동화" [level=3] [ref=e167]
+          - paragraph [ref=e168]: 하나의 영상으로 컷편집, 크롭, 팬캠, 편집을 모두 자동화하는 시스템입니다.
+    - generic [ref=e174]:
+      - heading "지금 바로 AI 직캠을 만들어보세요" [level=2] [ref=e175]
+      - paragraph [ref=e176]: K-POP 무대 영상 URL만 있으면 됩니다. 무료로 시작하세요.
+      - link "시작하기" [ref=e177] [cursor=pointer]:
+        - /url: /converter
+        - text: 시작하기
+        - img [ref=e178]
+    - contentinfo [ref=e180]:
+      - generic [ref=e181]:
+        - generic [ref=e182]: FanCam AI
+        - generic [ref=e183]: Built with Google Gemini · Hackathon 2026

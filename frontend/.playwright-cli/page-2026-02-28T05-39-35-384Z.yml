@@ -1,0 +1,38 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e4]:
+      - link "FanCamAI" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e11]: FanCamAI
+      - link "직캠 만들기" [ref=e13] [cursor=pointer]:
+        - /url: /converter
+        - text: 직캠 만들기
+        - img [ref=e14]
+  - generic [ref=e16]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e21]: "1"
+        - generic [ref=e22]: 영상 선택
+      - generic [ref=e23]:
+        - generic [ref=e25]: "2"
+        - generic [ref=e26]: 타겟 설정
+      - generic [ref=e27]:
+        - generic [ref=e29]: "3"
+        - generic [ref=e30]: 옵션
+      - generic [ref=e31]:
+        - generic [ref=e33]: "4"
+        - generic [ref=e34]: 결과
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - heading "영상을 선택하세요" [level=2] [ref=e39]
+        - paragraph [ref=e40]: 직캠을 생성할 원본 영상을 업로드하거나 YouTube URL을 입력하세요.
+      - generic [ref=e41]:
+        - generic [ref=e42] [cursor=pointer]:
+          - img [ref=e44]
+          - heading "파일 업로드" [level=3] [ref=e47]
+          - paragraph [ref=e48]: 로컬 영상 파일을 직접 업로드합니다
+        - generic [ref=e49] [cursor=pointer]:
+          - img [ref=e51]
+          - heading "YouTube URL" [level=3] [ref=e54]
+          - paragraph [ref=e55]: YouTube 영상 주소를 붙여넣으세요
