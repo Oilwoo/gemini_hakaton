@@ -108,7 +108,8 @@ class TrackResponse(BaseModel):
 # Utility helpers
 # -----------------------------
 def _require_env():
-    pass  # API Key is now hardcoded
+    if not os.environ.get("GEMINI_API_KEY"):
+        raise RuntimeError("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다. 사용할 환경 공간에 API 키를 등록해주세요.")
 
 
 def _run(cmd: List[str]) -> None:
@@ -187,8 +188,7 @@ def gemini_track_frames(
     max_retries: int = 2
 ) -> TrackResponse:
     _require_env()
-    # API key is explicitly hardcoded for the demo
-    client = genai.Client(api_key="AIzaSyAINZ6sPdzAuaBKK0B-9MgnhPHohmebl6I")
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
     contents: List[Any] = []
     for (t, img_bytes) in frames:
@@ -202,7 +202,7 @@ def gemini_track_frames(
     )
 
     prompt = f"""Task:
-You will receive sequential video frames. Track exactly ONE person who matches this description:
+You will receive sequential video frames. Track exactly ONE target (person, animal, vehicle, ball, or any specified object) that matches this description:
 - TARGET: {target_description}
 """
 
@@ -212,7 +212,7 @@ You will receive sequential video frames. Track exactly ONE person who matches t
         h, w = image_shape
         nx = int(cx / w * 1000)
         ny = int(cy / h * 1000)
-        prompt += f"\n- POINT HINT: In the first frame, the user clicked near normalized coordinate (x: {nx}, y: {ny}) on the 0..1000 scale. Strongly prefer tracking the person located around this area.\n"
+        prompt += f"\n- POINT HINT: In the first frame, the user clicked near normalized coordinate (x: {nx}, y: {ny}) on the 0..1000 scale. Strongly prefer tracking the target located around this area.\n"
 
     prompt += """
 For each frame:
@@ -221,7 +221,7 @@ For each frame:
 
 Important:
 - Output must match the schema. No extra keys. No markdown. No commentary.
-- Be consistent across time (prefer the same person).
+- Be consistent across time (track the identical target/object across frames).
 """
 
     schema = TrackResponse.model_json_schema()
