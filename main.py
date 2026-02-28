@@ -286,6 +286,7 @@ class CropConfig:
     use_kalman: bool = False
     ab_compare: bool = False
     cinema_delay_frames: int = 0
+    dynamic_zoom: bool = False
 
 
 def _interp_box(frames: List[TrackFrame], t: float) -> Optional[List[int]]:
@@ -344,6 +345,9 @@ def render_fancam(
     target_aspect = cfg.out_w / cfg.out_h
     idx = 0
     
+    prev_bx, prev_by = None, None
+    dynamic_margin = cfg.margin
+    
     while True:
         ok, frame = cap.read()
         if not ok: break
@@ -369,7 +373,30 @@ def render_fancam(
                 ch = in_h; cw = ch * target_aspect
             else:
                 bx, by = (x1 + x2) / 2, (y1 + y2) / 2
-                bw, bh = (x2 - x1) * cfg.margin, (y2 - y1) * cfg.margin
+                
+                # Dynamic Zoom (다이내믹 줌)
+                current_margin = cfg.margin
+                if cfg.dynamic_zoom:
+                    if prev_bx is not None and prev_by is not None:
+                        # 화면을 이동한 거리
+                        dist = np.sqrt((bx - prev_bx)**2 + (by - prev_by)**2)
+                        diag = np.sqrt(in_w**2 + in_h**2)
+                        speed_ratio = dist / diag
+                        
+                        max_margin = cfg.margin + 1.2
+                        # 속도에 비례해서 증가 (20.0은 민감도 스케일)
+                        target_margin = cfg.margin + (speed_ratio * 30.0) 
+                        target_margin = min(target_margin, max_margin)
+                        
+                        # 줌아웃 할 때는 빠르게, 줌인 할 때는 느리게 (흔들림 방지)
+                        if target_margin > dynamic_margin:
+                            dynamic_margin = 0.3 * target_margin + 0.7 * dynamic_margin
+                        else:
+                            dynamic_margin = 0.05 * target_margin + 0.95 * dynamic_margin
+                    prev_bx, prev_by = bx, by
+                    current_margin = dynamic_margin
+                
+                bw, bh = (x2 - x1) * current_margin, (y2 - y1) * current_margin
                 
                 # Minimum height bound
                 min_h = in_h * 0.35 
@@ -542,6 +569,7 @@ def make_fancam(
     auto_cut: bool = False,
     model: str = "gemini-3-flash-preview",
     cinema_delay_frames: int = 0,
+    dynamic_zoom: bool = False,
     progress=None
 ) -> Tuple[str, dict]:
 
@@ -577,7 +605,7 @@ def make_fancam(
         cfg = CropConfig(
             out_w=out_w, out_h=out_h, margin=margin, 
             smooth_alpha=smooth_alpha, use_kalman=use_kalman, ab_compare=ab_compare,
-            cinema_delay_frames=cinema_delay_frames
+            cinema_delay_frames=cinema_delay_frames, dynamic_zoom=dynamic_zoom
         )
         
         if progress: progress(0.8, desc="4/5: 자연스러운 직캠 카메라 워킹 렌더링 중...")
@@ -657,6 +685,7 @@ class GenerateRequest(BaseModel):
     auto_cut: bool = False
     model: str = "gemini-3-flash-preview"
     cinema_delay_frames: int = 0
+    dynamic_zoom: bool = False
 
 @app.post("/api/upload")
 async def api_upload(file: UploadFile = File(...)):
@@ -728,7 +757,8 @@ async def api_generate(req: GenerateRequest):
             ab_compare=req.ab_compare,
             auto_cut=req.auto_cut,
             model=req.model,
-            cinema_delay_frames=req.cinema_delay_frames
+            cinema_delay_frames=req.cinema_delay_frames,
+            dynamic_zoom=req.dynamic_zoom
         )
         
         # 결과를 outputs 폴더로 이동하여 브라우저에서 접근 가능하게 처리
