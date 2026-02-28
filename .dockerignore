@@ -47,3 +47,8 @@ token.pickle
 Dockerfile
 docker-compose.yml
 .dockerignore
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/package-lock.json
