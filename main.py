@@ -17,6 +17,10 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTa
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+# 로컬(또는 서버) 환경의 .env 파일 로드
+load_dotenv()
 
 import traceback
 from google import genai
@@ -598,8 +602,9 @@ UPLOADS_DIR.mkdir(exist_ok=True)
 OUTPUTS_DIR = api_temp_dir / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
-# 프론트엔드 폴더 (현재 경로 내 "frontend")
-FRONTEND_DIR = Path("c:/project/gemini_hakaton2/frontend")
+# 프론트엔드 폴더 (현재 파일 기준으로 동적 탐색, Mac 호환)
+BASE_DIR = Path(__file__).resolve().parent
+FRONTEND_DIR = BASE_DIR / "frontend"
 FRONTEND_DIR.mkdir(parents=True, exist_ok=True)
 
 # 정적 파일 서빙
