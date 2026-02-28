@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 직캠 메이커 프론트엔드</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        img,
+        video {
+            max-width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #canvas-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: crosshair;
+        }
+
+        #click-marker {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid red;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            pointer-events: none;
+        }
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .status {
+            padding: 10px;
+            background: #f4f4f4;
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎥 MVP) Gemini-native Vibe 직캠 메이커</h1>
+    <p>기존 Gradio UI를 완전히 분리하여 제공되는 프론트엔드 목업입니다. (여기서부터는 프론트엔드 개발자가 React 등으로 자유롭게 고도화할 수 있습니다!)</p>
+
+    <div class="row">
+        <!-- 왼쪽: 컨트롤 패널 -->
+        <div class="col">
+            <div class="card">
+                <h3>1. 영상 준비 (파일 또는 유튜브)</h3>
+                <input type="file" id="fileInput" accept="video/mp4,video/x-m4v,video/*">
+                <button id="uploadBtn">업로드</button>
+                <br><br>
+                <input type="text" id="ytUrl" placeholder="유튜브 URL 입력">
+                <button id="ytBtn">유튜브 가져오기</button>
+                <div id="videoStatus" class="status">아직 로드되지 않음</div>
+            </div>
+
+            <div class="card">
+                <h3>2. 타겟 선택</h3>
+                <div style="display:flex; gap:10px;">
+                    <label style="flex:1">시작 시간(초): <input type="number" id="startS" value="0"></label>
+                    <label style="flex:1">끝 시간(초): <input type="number" id="endS" value="15"></label>
+                </div>
+                <p><strong>아래 프레임을 클릭해서 타겟을 정하세요!</strong></p>
+                <div id="canvas-wrapper">
+                    <img id="frameImg"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' style='background:%23eee'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23666'%3E영상을 먼저 업로드하세요%3C/text%3E%3C/svg%3E">
+                    <div id="click-marker"></div>
+                </div>
+                <div id="clickStatus" class="status">클릭 대기 중</div>
+            </div>
+
+            <div class="card">
+                <h3>3. 생성 옵션</h3>
+                <label>추가 설명 (옵션):
+                    <input type="text" id="targetDesc" placeholder="예: 파란색 재킷을 입은 사람">
+                </label>
+                <br><br>
+                <div style="display:flex; gap:10px;">
+                    <label style="flex:1">출력 비율:
+                        <select id="outRatio" style="width:100%; padding:6px;">
+                            <option value="9:16" selected>9:16 (세로 직캠용)</option>
+                            <option value="16:9">16:9 (가로 원본유지)</option>
+                            <option value="1:1">1:1 (인스타그램용)</option>
+                        </select>
+                    </label>
+                    <label style="flex:1">크롭 여백 (1.0~2.5):
+                        <input type="number" id="marginOpt" value="1.5" min="1.0" max="2.5" step="0.1"
+                            title="값이 작을수록 타이트하게 줌-인 됩니다.">
+                    </label>
+                </div>
+                <br>
+                <div style="display:flex; gap:10px;">
+                    <label style="flex:1" title="0이면 즉각추적, 15 정도면 움직임보다 반박자 늦게 카메라가 따라가는 편집자 Vibe">
+                        <b>🎥 시네마틱 딜레이 (프레임):</b>
+                        <input type="number" id="cinemaDelay" value="15" min="0" max="60" step="1">
+                    </label>
+                    <label style="flex:1; display:flex; align-items:center; gap:5px;"
+                        title="이동 속도에 따라 자동으로 줌 아웃/줌 인을 조절합니다 (스포츠 추천)">
+                        <b>🔍 다이내믹 줌 (자동 속도 줌):</b>
+                        <input type="checkbox" id="dynamicZoom" checked style="width:20px;height:20px;">
+                    </label>
+                </div>
+                <br>
+                <button id="generateBtn" style="width:100%; padding:15px; font-size:16px;">🚀 직캠 생성 시작</button>
+                <div id="genStatus" class="status" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- 오른쪽: 결과 표시 패널 -->
+        <div class="col">
+            <div class="card">
+                <h3>결과 화면</h3>
+                <video id="resultVideo" controls width="100%"></video>
+                <br><br>
+                <div id="resultActions" style="display:none; flex-direction: column; gap: 10px;">
+                    <div class="card" style="background: #f9f9f9; padding: 10px; border: 1px dashed #ccc;">
+                        <h4>YouTube 업로드 설정</h4>
+                        <label>제목: <input type="text" id="ytTitle" placeholder="유튜브 제목 입력"></label>
+                        <label>설명: <textarea id="ytDesc" rows="3"
+                                style="width:100%; box-sizing:border-box; padding:6px;"
+                                placeholder="유튜브 설명 입력"></textarea></label>
+                        <button id="ytRecommendBtn" style="background: #6f42c1; width: 100%; margin-top: 5px;">✨ 제목/설명
+                            AI 추천 받기</button>
+                    </div>
+                    <button id="ytUploadBtn" style="background: #FF0000; width: 100%;">🔴 YouTube 숏츠로 업로드</button>
+                    <div id="ytUploadStatus" class="status" style="display:none;"></div>
+                    <a id="jsonLink" href="#" target="_blank">결과 JSON 원본 보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let videoPath = "";
+        let clickX = null;
+        let clickY = null;
+        let imageW = null;
+        let imageH = null;
+
+        const API_BASE = window.location.origin;
+
+        const setStatus = (id, msg) => { document.getElementById(id).innerText = msg; };
+        const setLoadState = (isLoading) => {
+            document.getElementById('uploadBtn').disabled = isLoading;
+            document.getElementById('ytBtn').disabled = isLoading;
+            document.getElementById('generateBtn').disabled = isLoading;
+        };
+
+        // UI 설정값을 localStorage에 저장
+        const saveSettings = () => {
+            const settings = {
+                videoPath,
+                start_s: document.getElementById('startS').value,
+                end_s: document.getElementById('endS').value,
+                targetDesc: document.getElementById('targetDesc').value,
+                outRatio: document.getElementById('outRatio').value,
+                margin: document.getElementById('marginOpt').value,
+                ytTitle: document.getElementById('ytTitle').value,
+                ytDesc: document.getElementById('ytDesc').value,
+                clickX, clickY, imageW, imageH
+            };
+            localStorage.setItem('jikcam_settings', JSON.stringify(settings));
+        };
+
+        document.getElementById('uploadBtn').onclick = async () => {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("파일을 선택하세요");
+            setLoadState(true);
+            setStatus('videoStatus', '업로드 중 (완료 후 프레임을 추출합니다)...');
+
+            const fd = new FormData();
+            fd.append("file", file);
+            try {
+                const res = await fetch(`${API_BASE}/api/upload`, { method: "POST", body: fd });
+                const data = await res.json();
+                videoPath = data.video_path;
+                await loadFrame();
+            } catch (e) {
+                alert("업로드 실패: " + e);
+            }
+            setLoadState(false);
+        };
+
+        document.getElementById('ytBtn').onclick = async () => {
+            const url = document.getElementById('ytUrl').value;
+            if (!url) return alert("URL을 입력하세요");
+            setLoadState(true);
+            setStatus('videoStatus', '유튜브 다운로드 중 (수 분이 걸릴 수 있습니다)...');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/youtube`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: url, res: "720p" })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "알 수 없는 오류");
+                videoPath = data.video_path;
+                await loadFrame();
+            } catch (e) {
+                alert("다운로드 실패: " + e);
+                setStatus('videoStatus', '다운로드 실패');
+            }
+            setLoadState(false);
+        };
+
+        const loadFrame = async () => {
+            if (!videoPath) return;
+            setStatus('videoStatus', '프레임 로드 중...');
+            try {
+                const infoRes = await fetch(`${API_BASE}/api/video_info?video_path=${encodeURIComponent(videoPath)}`);
+                const info = await infoRes.json();
+
+                const time = parseFloat(document.getElementById('startS').value) || 0;
+                const frameUrl = `${API_BASE}/api/frame?video_path=${encodeURIComponent(videoPath)}&time=${time}`;
+
+                const img = document.getElementById('frameImg');
+                await new Promise((resolve) => {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    img.src = frameUrl;
+                });
+
+                imageW = img.naturalWidth;
+                imageH = img.naturalHeight;
+
+                setStatus('videoStatus', `✅ 비디오 준비 완료 (길이: ${info.duration.toFixed(1)}초, 해상도: ${imageW}x${imageH})`);
+            } catch (e) {
+                alert(e);
+                setStatus('videoStatus', '프레임 로드 실패');
+            }
+        };
+
+        document.getElementById('startS').onchange = () => { loadFrame(); saveSettings(); };
+        document.getElementById('endS').onchange = () => { saveSettings(); };
+        document.getElementById('targetDesc').oninput = () => { saveSettings(); };
+        document.getElementById('outRatio').onchange = () => { saveSettings(); };
+        document.getElementById('marginOpt').onchange = () => { saveSettings(); };
+        document.getElementById('ytTitle').oninput = () => { saveSettings(); };
+        document.getElementById('ytDesc').oninput = () => { saveSettings(); };
+
+        document.getElementById('frameImg').onclick = (e) => {
+            if (!videoPath) return;
+            const rect = e.target.getBoundingClientRect();
+
+            const scaleX = e.target.naturalWidth / rect.width;
+            const scaleY = e.target.naturalHeight / rect.height;
+
+            clickX = Math.round((e.clientX - rect.left) * scaleX);
+            clickY = Math.round((e.clientY - rect.top) * scaleY);
+
+            const marker = document.getElementById('click-marker');
+            marker.style.left = `${e.clientX - rect.left}px`;
+            marker.style.top = `${e.clientY - rect.top}px`;
+            marker.style.display = 'block';
+
+            setStatus('clickStatus', `✅ 선택 완료: [원본 X: ${clickX}, Y: ${clickY}]`);
+            saveSettings();
+        };
+
+        document.getElementById('generateBtn').onclick = async () => {
+            if (!videoPath) return alert("영상을 먼저 로드하세요.");
+
+            const genStatus = document.getElementById('genStatus');
+            genStatus.style.display = 'block';
+            genStatus.innerText = "⏳ 영상 처리 시작... (처리에 시간이 걸릴 수 있습니다.)";
+            setLoadState(true);
+
+            const payload = {
+                video_path: videoPath,
+                target_description: document.getElementById('targetDesc').value || "",
+                start_s: parseFloat(document.getElementById('startS').value),
+                end_s: parseFloat(document.getElementById('endS').value),
+                click_x: clickX,
+                click_y: clickY,
+                image_w: imageW,
+                image_h: imageH,
+                out_ratio: document.getElementById('outRatio').value,
+                margin: parseFloat(document.getElementById('marginOpt').value),
+                cinema_delay_frames: parseInt(document.getElementById('cinemaDelay').value) || 0,
+                dynamic_zoom: document.getElementById('dynamicZoom').checked
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/generate`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.detail);
+
+                genStatus.innerText = "✅ 직캠 추출이 완료되었습니다!";
+
+                const resultVideo = document.getElementById('resultVideo');
+                resultVideo.src = data.video_url;
+                resultVideo.play();
+
+                const jsonLink = document.getElementById('jsonLink');
+                jsonLink.href = data.json_url;
+                document.getElementById('resultActions').style.display = 'flex';
+
+                // LocalStorage에 결과 저장
+                localStorage.setItem('lastResult', JSON.stringify({
+                    video_url: data.video_url,
+                    json_url: data.json_url
+                }));
+
+            } catch (e) {
+                alert("실패: " + e);
+                genStatus.innerText = "❌ 오류: " + e;
+            }
+            setLoadState(false);
+        };
+
+        // YouTube 업로드 버튼 클릭 이벤트
+        document.getElementById('ytUploadBtn').onclick = async () => {
+            const videoSrc = document.getElementById('resultVideo').src;
+            if (!videoSrc) return alert("업로드할 영상이 없습니다.");
+
+            const ytUploadStatus = document.getElementById('ytUploadStatus');
+            ytUploadStatus.style.display = 'block';
+            ytUploadStatus.innerText = "⏳ 유튜브 업로드 중... (OAuth 인증 창이 뜰 수 있습니다)";
+            document.getElementById('ytUploadBtn').disabled = true;
+
+            try {
+                // video_url에서 파일명만 추출하거나 전체 경로 사용
+                const fileName = videoSrc.split('/').pop();
+
+                const res = await fetch(`${API_BASE}/api/youtube/upload`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        video_path: fileName,
+                        title: document.getElementById('ytTitle').value || "Gemini Fancam Shorts",
+                        description: document.getElementById('ytDesc').value || "Generated by Gemini AI #Shorts",
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail);
+
+                ytUploadStatus.innerHTML = `✅ 업로드 완료! <a href="${data.url}" target="_blank">유튜브에서 보기</a>`;
+            } catch (e) {
+                alert("업로드 실패: " + e);
+                ytUploadStatus.innerText = "❌ 업로드 에러: " + e;
+            }
+            document.getElementById('ytUploadBtn').disabled = false;
+        };
+
+        // 페이지 로드 시 이전 결과 및 설정 복원
+        window.onload = async () => {
+            const settingsStr = localStorage.getItem('jikcam_settings');
+            if (settingsStr) {
+                const s = JSON.parse(settingsStr);
+                // 서버에 파일이 여전히 있는지 확인
+                try {
+                    const check = await fetch(`${API_BASE}/api/video_info?video_path=${encodeURIComponent(s.videoPath)}`);
+                    if (check.ok) {
+                        videoPath = s.videoPath;
+                        document.getElementById('startS').value = s.start_s || 0;
+                        document.getElementById('endS').value = s.end_s || 15;
+                        document.getElementById('targetDesc').value = s.targetDesc || "";
+                        document.getElementById('outRatio').value = s.outRatio || "9:16";
+                        document.getElementById('marginOpt').value = s.margin || 1.5;
+                        document.getElementById('ytTitle').value = s.ytTitle || "";
+                        document.getElementById('ytDesc').value = s.ytDesc || "";
+                        clickX = s.clickX; clickY = s.clickY;
+                        imageW = s.imageW; imageH = s.imageH;
+
+                        await loadFrame();
+                        if (clickX !== null) {
+                            // 마커 복원 (단, 이미지가 로드된 후 정확한 위치를 잡아야 하므로 약간의 지연 필요할 수 있음)
+                            setTimeout(() => {
+                                const img = document.getElementById('frameImg');
+                                const rect = img.getBoundingClientRect();
+                                const marker = document.getElementById('click-marker');
+                                if (imageW && rect.width) {
+                                    marker.style.left = `${(clickX / imageW) * rect.width}px`;
+                                    marker.style.top = `${(clickY / imageH) * rect.height}px`;
+                                    marker.style.display = 'block';
+                                    setStatus('clickStatus', `✅ 복원됨: [원본 X: ${clickX}, Y: ${clickY}]`);
+                                }
+                            }, 500);
+                        }
+                    } else {
+                        console.log("이전 작업 영상이 서버에 없습니다.");
+                    }
+                } catch (e) { console.error("파일 확인 실패", e); }
+            }
+
+            const lastResult = localStorage.getItem('lastResult');
+            if (lastResult) {
+                const data = JSON.parse(lastResult);
+
+                // 결과 파일 존재 확인
+                try {
+                    const resUrl = data.video_url.startsWith('http') ? data.video_url : `${API_BASE}${data.video_url}`;
+                    const check = await fetch(resUrl, { method: 'HEAD' });
+                    if (check.ok) {
+                        const resultVideo = document.getElementById('resultVideo');
+                        resultVideo.src = data.video_url;
+
+                        const jsonLink = document.getElementById('jsonLink');
+                        jsonLink.href = data.json_url;
+
+                        document.getElementById('resultActions').style.display = 'flex';
+                        document.getElementById('genStatus').style.display = 'block';
+                        document.getElementById('genStatus').innerText = "이전 생성 결과가 복원되었습니다.";
+                    }
+                } catch (e) { console.log("이전 결과 파일이 없습니다."); }
+            }
+        };
+
+        // 추천 버튼 클릭 이벤트
+        document.getElementById('ytRecommendBtn').onclick = async () => {
+            const targetDesc = document.getElementById('targetDesc').value;
+            if (!targetDesc) return alert("타겟 설명을 먼저 입력하세요.");
+
+            const btn = document.getElementById('ytRecommendBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ 생성 중...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/youtube/recommend`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ target_description: targetDesc })
+                });
+                const data = await res.json();
+
+                document.getElementById('ytTitle').value = data.title;
+                document.getElementById('ytDesc').value = data.description;
+            } catch (e) {
+                alert("추천 실패: " + e);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>
