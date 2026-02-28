@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    container_name: gemini-fancam
+    ports:
+      - "7860:7860"
+    env_file:
+      - .env
+    volumes:
+      - ./credentials.json:/app/credentials.json
+      - ./token.pickle:/app/token.pickle
+      # Optional: persist uploads and outputs
+      # - ./data/uploads:/app/uploads
+      # - ./data/outputs:/app/outputs
+    restart: unless-stopped
+
+networks:
+  default:
+    name: gemini-fancam-network
