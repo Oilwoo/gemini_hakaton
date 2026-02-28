@@ -42,6 +42,7 @@ c:/
 # Secrets & Tokens
 credentials.json
 token.pickle
+cookies.txt
 
 # Docker
 Dockerfile

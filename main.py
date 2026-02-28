@@ -51,17 +51,36 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
     if not url.strip():
         return ""
     import yt_dlp
-    
+    from youtube_pw_downloader import extract_youtube_cookies_via_playwright
+
     # 해상도 설정
+    # NOTE: OpenCV는 AV1(av01) 코덱을 지원하지 않으므로 명시적으로 제외합니다.
+    #   1순위: H.264(avc) + AAC  → 가장 호환성이 높음
+    #   2순위: AV1 제외 mp4      → H.264가 없을 때 차선책
+    #   3순위: 일반 best         → 최후 fallback
     if res == "1080p":
-        format_str = "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best"
+        format_str = (
+            "bestvideo[height<=1080][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[height<=1080][ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best[height<=1080][ext=mp4]"
+            "/best"
+        )
     elif res == "720p":
-        format_str = "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720][ext=mp4]/best"
+        format_str = (
+            "bestvideo[height<=720][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[height<=720][ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best[height<=720][ext=mp4]"
+            "/best"
+        )
     else:
-        format_str = "best"
+        format_str = (
+            "bestvideo[ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best"
+        )
 
     out_tmpl = os.path.join(out_dir, "yt_downloaded_%(id)s.%(ext)s")
-    
+
     def my_hook(d):
         if d['status'] == 'downloading':
             total = d.get('total_bytes') or d.get('total_bytes_estimate', 0)
@@ -72,11 +91,16 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
             if progress is not None:
                 progress(1.0, desc="다운로드 완료! 후처리(병합) 중...")
 
-    # 쿠키 설정 (봇 감지 우회용)
-    cookie_path = os.environ.get("COOKIES_PATH", "cookies.txt")
-    if not os.path.isabs(cookie_path):
-        cookie_path = os.path.join(os.getcwd(), cookie_path)
-    
+    # ─── 봇 감지 우회 전략 ────────────────────────────────────────────────
+    # player_client 우선순위:
+    #   tv_embedded → mediaconnect → android → ios → web
+    # 로그인 없이도 bot 감지를 우회할 수 있는 클라이언트를 순서대로 시도합니다.
+    #
+    # 쿠키(cookies.txt)는 로그인된 세션 쿠키가 있을 때만 효과가 있습니다.
+    # Playwright로 추출한 익명 쿠키는 인증에 불충분하므로 사용하지 않습니다.
+    # 정적 cookies.txt(수동 추출)는 보조 수단으로만 사용합니다.
+    # ─────────────────────────────────────────────────────────────────────
+
     ydl_opts = {
         'format': format_str,
         'outtmpl': out_tmpl,
@@ -84,14 +108,24 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
         'ffmpeg_location': imageio_ffmpeg.get_ffmpeg_exe(),
         'quiet': True,
         'noprogress': True,
-        'progress_hooks': [my_hook]
+        'progress_hooks': [my_hook],
+        # 봇 감지 우회: 여러 player_client를 순서대로 시도
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['tv_embedded', 'mediaconnect', 'android', 'ios', 'web'],
+            }
+        },
     }
 
-    if os.path.exists(cookie_path):
-        logger.info(f"Using cookies from: {cookie_path}")
-        ydl_opts['cookiefile'] = cookie_path
+    # 보조: 정적 cookies.txt (수동으로 로그인 쿠키를 추출했을 때만 유효)
+    static_cookie = os.environ.get("COOKIES_PATH", "cookies.txt")
+    if not os.path.isabs(static_cookie):
+        static_cookie = os.path.join(os.getcwd(), static_cookie)
+    if os.path.exists(static_cookie) and os.path.getsize(static_cookie) > 0:
+        logger.info(f"정적 cookies.txt 사용 (보조): {static_cookie}")
+        ydl_opts['cookiefile'] = static_cookie
     else:
-        logger.warning(f"No cookies.txt found at {cookie_path}. Download might fail due to bot detection.")
+        logger.info("정적 cookies.txt 없음. player_client 우회 방식만 사용합니다.")
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
