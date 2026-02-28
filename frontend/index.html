@@ -148,7 +148,20 @@
                 <h3>결과 화면</h3>
                 <video id="resultVideo" controls width="100%"></video>
                 <br><br>
-                <a id="jsonLink" href="#" target="_blank" style="display:none;">결과 JSON 원본 보기</a>
+                <div id="resultActions" style="display:none; flex-direction: column; gap: 10px;">
+                    <div class="card" style="background: #f9f9f9; padding: 10px; border: 1px dashed #ccc;">
+                        <h4>YouTube 업로드 설정</h4>
+                        <label>제목: <input type="text" id="ytTitle" placeholder="유튜브 제목 입력"></label>
+                        <label>설명: <textarea id="ytDesc" rows="3"
+                                style="width:100%; box-sizing:border-box; padding:6px;"
+                                placeholder="유튜브 설명 입력"></textarea></label>
+                        <button id="ytRecommendBtn" style="background: #6f42c1; width: 100%; margin-top: 5px;">✨ 제목/설명
+                            AI 추천 받기</button>
+                    </div>
+                    <button id="ytUploadBtn" style="background: #FF0000; width: 100%;">🔴 YouTube 숏츠로 업로드</button>
+                    <div id="ytUploadStatus" class="status" style="display:none;"></div>
+                    <a id="jsonLink" href="#" target="_blank">결과 JSON 원본 보기</a>
+                </div>
             </div>
         </div>
     </div>
@@ -167,6 +180,22 @@
             document.getElementById('uploadBtn').disabled = isLoading;
             document.getElementById('ytBtn').disabled = isLoading;
             document.getElementById('generateBtn').disabled = isLoading;
+        };
+
+        // UI 설정값을 localStorage에 저장
+        const saveSettings = () => {
+            const settings = {
+                videoPath,
+                start_s: document.getElementById('startS').value,
+                end_s: document.getElementById('endS').value,
+                targetDesc: document.getElementById('targetDesc').value,
+                outRatio: document.getElementById('outRatio').value,
+                margin: document.getElementById('marginOpt').value,
+                ytTitle: document.getElementById('ytTitle').value,
+                ytDesc: document.getElementById('ytDesc').value,
+                clickX, clickY, imageW, imageH
+            };
+            localStorage.setItem('jikcam_settings', JSON.stringify(settings));
         };
 
         document.getElementById('uploadBtn').onclick = async () => {
@@ -238,7 +267,13 @@
             }
         };
 
-        document.getElementById('startS').onchange = () => { loadFrame(); };
+        document.getElementById('startS').onchange = () => { loadFrame(); saveSettings(); };
+        document.getElementById('endS').onchange = () => { saveSettings(); };
+        document.getElementById('targetDesc').oninput = () => { saveSettings(); };
+        document.getElementById('outRatio').onchange = () => { saveSettings(); };
+        document.getElementById('marginOpt').onchange = () => { saveSettings(); };
+        document.getElementById('ytTitle').oninput = () => { saveSettings(); };
+        document.getElementById('ytDesc').oninput = () => { saveSettings(); };
 
         document.getElementById('frameImg').onclick = (e) => {
             if (!videoPath) return;
@@ -256,6 +291,7 @@
             marker.style.display = 'block';
 
             setStatus('clickStatus', `✅ 선택 완료: [원본 X: ${clickX}, Y: ${clickY}]`);
+            saveSettings();
         };
 
         document.getElementById('generateBtn').onclick = async () => {
@@ -297,13 +333,145 @@
 
                 const jsonLink = document.getElementById('jsonLink');
                 jsonLink.href = data.json_url;
-                jsonLink.style.display = 'inline-block';
+                document.getElementById('resultActions').style.display = 'flex';
+
+                // LocalStorage에 결과 저장
+                localStorage.setItem('lastResult', JSON.stringify({
+                    video_url: data.video_url,
+                    json_url: data.json_url
+                }));
 
             } catch (e) {
                 alert("실패: " + e);
                 genStatus.innerText = "❌ 오류: " + e;
             }
             setLoadState(false);
+        };
+
+        // YouTube 업로드 버튼 클릭 이벤트
+        document.getElementById('ytUploadBtn').onclick = async () => {
+            const videoSrc = document.getElementById('resultVideo').src;
+            if (!videoSrc) return alert("업로드할 영상이 없습니다.");
+
+            const ytUploadStatus = document.getElementById('ytUploadStatus');
+            ytUploadStatus.style.display = 'block';
+            ytUploadStatus.innerText = "⏳ 유튜브 업로드 중... (OAuth 인증 창이 뜰 수 있습니다)";
+            document.getElementById('ytUploadBtn').disabled = true;
+
+            try {
+                // video_url에서 파일명만 추출하거나 전체 경로 사용
+                const fileName = videoSrc.split('/').pop();
+
+                const res = await fetch(`${API_BASE}/api/youtube/upload`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        video_path: fileName,
+                        title: document.getElementById('ytTitle').value || "Gemini Fancam Shorts",
+                        description: document.getElementById('ytDesc').value || "Generated by Gemini AI #Shorts",
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail);
+
+                ytUploadStatus.innerHTML = `✅ 업로드 완료! <a href="${data.url}" target="_blank">유튜브에서 보기</a>`;
+            } catch (e) {
+                alert("업로드 실패: " + e);
+                ytUploadStatus.innerText = "❌ 업로드 에러: " + e;
+            }
+            document.getElementById('ytUploadBtn').disabled = false;
+        };
+
+        // 페이지 로드 시 이전 결과 및 설정 복원
+        window.onload = async () => {
+            const settingsStr = localStorage.getItem('jikcam_settings');
+            if (settingsStr) {
+                const s = JSON.parse(settingsStr);
+                // 서버에 파일이 여전히 있는지 확인
+                try {
+                    const check = await fetch(`${API_BASE}/api/video_info?video_path=${encodeURIComponent(s.videoPath)}`);
+                    if (check.ok) {
+                        videoPath = s.videoPath;
+                        document.getElementById('startS').value = s.start_s || 0;
+                        document.getElementById('endS').value = s.end_s || 15;
+                        document.getElementById('targetDesc').value = s.targetDesc || "";
+                        document.getElementById('outRatio').value = s.outRatio || "9:16";
+                        document.getElementById('marginOpt').value = s.margin || 1.5;
+                        document.getElementById('ytTitle').value = s.ytTitle || "";
+                        document.getElementById('ytDesc').value = s.ytDesc || "";
+                        clickX = s.clickX; clickY = s.clickY;
+                        imageW = s.imageW; imageH = s.imageH;
+
+                        await loadFrame();
+                        if (clickX !== null) {
+                            // 마커 복원 (단, 이미지가 로드된 후 정확한 위치를 잡아야 하므로 약간의 지연 필요할 수 있음)
+                            setTimeout(() => {
+                                const img = document.getElementById('frameImg');
+                                const rect = img.getBoundingClientRect();
+                                const marker = document.getElementById('click-marker');
+                                if (imageW && rect.width) {
+                                    marker.style.left = `${(clickX / imageW) * rect.width}px`;
+                                    marker.style.top = `${(clickY / imageH) * rect.height}px`;
+                                    marker.style.display = 'block';
+                                    setStatus('clickStatus', `✅ 복원됨: [원본 X: ${clickX}, Y: ${clickY}]`);
+                                }
+                            }, 500);
+                        }
+                    } else {
+                        console.log("이전 작업 영상이 서버에 없습니다.");
+                    }
+                } catch (e) { console.error("파일 확인 실패", e); }
+            }
+
+            const lastResult = localStorage.getItem('lastResult');
+            if (lastResult) {
+                const data = JSON.parse(lastResult);
+
+                // 결과 파일 존재 확인
+                try {
+                    const resUrl = data.video_url.startsWith('http') ? data.video_url : `${API_BASE}${data.video_url}`;
+                    const check = await fetch(resUrl, { method: 'HEAD' });
+                    if (check.ok) {
+                        const resultVideo = document.getElementById('resultVideo');
+                        resultVideo.src = data.video_url;
+
+                        const jsonLink = document.getElementById('jsonLink');
+                        jsonLink.href = data.json_url;
+
+                        document.getElementById('resultActions').style.display = 'flex';
+                        document.getElementById('genStatus').style.display = 'block';
+                        document.getElementById('genStatus').innerText = "이전 생성 결과가 복원되었습니다.";
+                    }
+                } catch (e) { console.log("이전 결과 파일이 없습니다."); }
+            }
+        };
+
+        // 추천 버튼 클릭 이벤트
+        document.getElementById('ytRecommendBtn').onclick = async () => {
+            const targetDesc = document.getElementById('targetDesc').value;
+            if (!targetDesc) return alert("타겟 설명을 먼저 입력하세요.");
+
+            const btn = document.getElementById('ytRecommendBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ 생성 중...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/youtube/recommend`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ target_description: targetDesc })
+                });
+                const data = await res.json();
+
+                document.getElementById('ytTitle').value = data.title;
+                document.getElementById('ytDesc').value = data.description;
+            } catch (e) {
+                alert("추천 실패: " + e);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         };
     </script>
 </body>
