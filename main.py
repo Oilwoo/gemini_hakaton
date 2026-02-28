@@ -72,6 +72,11 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
             if progress is not None:
                 progress(1.0, desc="다운로드 완료! 후처리(병합) 중...")
 
+    # 쿠키 설정 (봇 감지 우회용)
+    cookie_path = os.environ.get("COOKIES_PATH", "cookies.txt")
+    if not os.path.isabs(cookie_path):
+        cookie_path = os.path.join(os.getcwd(), cookie_path)
+    
     ydl_opts = {
         'format': format_str,
         'outtmpl': out_tmpl,
@@ -81,6 +86,12 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
         'noprogress': True,
         'progress_hooks': [my_hook]
     }
+
+    if os.path.exists(cookie_path):
+        logger.info(f"Using cookies from: {cookie_path}")
+        ydl_opts['cookiefile'] = cookie_path
+    else:
+        logger.warning(f"No cookies.txt found at {cookie_path}. Download might fail due to bot detection.")
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
