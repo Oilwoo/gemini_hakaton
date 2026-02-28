@@ -667,15 +667,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 폴더 설정
-api_temp_dir = Path(tempfile.gettempdir()) / "gemini_fancam_api"
-api_temp_dir.mkdir(exist_ok=True)
-UPLOADS_DIR = api_temp_dir / "uploads"
-UPLOADS_DIR.mkdir(exist_ok=True)
-OUTPUTS_DIR = api_temp_dir / "outputs"
-OUTPUTS_DIR.mkdir(exist_ok=True)
+# 폴더 설정 (Docker 환경을 고려하여 고정 경로 우선, 없으면 temp 사용)
+DOCKER_DATA_DIR = Path("/app/data")
+if DOCKER_DATA_DIR.exists():
+    UPLOADS_DIR = DOCKER_DATA_DIR / "uploads"
+    OUTPUTS_DIR = DOCKER_DATA_DIR / "outputs"
+else:
+    api_temp_dir = Path(tempfile.gettempdir()) / "gemini_fancam_api"
+    UPLOADS_DIR = api_temp_dir / "uploads"
+    OUTPUTS_DIR = api_temp_dir / "outputs"
 
-# 프론트엔드 폴더 (빌드된 React SPA를 서빙, 없으면 소스 폴더 fallback)
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+
+# 프론트엔드 폴더 (빌드된 React SPA dist를 우선 서빙)
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
 FRONTEND_SRC = BASE_DIR / "frontend"

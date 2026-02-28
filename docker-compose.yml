@@ -9,9 +9,7 @@ services:
     volumes:
       - ./credentials.json:/app/credentials.json
       - ./token.pickle:/app/token.pickle
-      # Optional: persist uploads and outputs
-      # - ./data/uploads:/app/uploads
-      # - ./data/outputs:/app/outputs
+      - ./data:/app/data
     restart: unless-stopped
 
 networks:
