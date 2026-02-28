@@ -137,6 +137,13 @@
                     </label>
                 </div>
                 <br>
+                <div style="display:flex; gap:10px;">
+                    <label style="flex:1" title="0이면 즉각추적, 15 정도면 움직임보다 반박자 늦게 카메라가 따라가는 편집자 Vibe">
+                        <b>🎥 시네마틱 딜레이 (프레임):</b>
+                        <input type="number" id="cinemaDelay" value="15" min="0" max="60" step="1">
+                    </label>
+                </div>
+                <br>
                 <button id="generateBtn" style="width:100%; padding:15px; font-size:16px;">🚀 직캠 생성 시작</button>
                 <div id="genStatus" class="status" style="display:none;"></div>
             </div>
@@ -276,7 +283,8 @@
                 image_w: imageW,
                 image_h: imageH,
                 out_ratio: document.getElementById('outRatio').value,
-                margin: parseFloat(document.getElementById('marginOpt').value)
+                margin: parseFloat(document.getElementById('marginOpt').value),
+                cinema_delay_frames: parseInt(document.getElementById('cinemaDelay').value) || 0
             };
 
             try {

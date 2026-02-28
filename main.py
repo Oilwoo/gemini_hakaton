@@ -285,6 +285,7 @@ class CropConfig:
     smooth_alpha: float = 0.75
     use_kalman: bool = False
     ab_compare: bool = False
+    cinema_delay_frames: int = 0
 
 
 def _interp_box(frames: List[TrackFrame], t: float) -> Optional[List[int]]:
@@ -336,6 +337,10 @@ def render_fancam(
     ema_cx, ema_cy, ema_cw, ema_ch = None, None, None, None
     k_cx, k_cy, k_cw, k_ch = None, None, None, None
     
+    # Cinematic Vibe Buffer (지연 추적)
+    from collections import deque
+    target_queue = deque(maxlen=max(1, cfg.cinema_delay_frames))
+
     target_aspect = cfg.out_w / cfg.out_h
     idx = 0
     
@@ -347,9 +352,7 @@ def render_fancam(
         box = _interp_box(track.frames, t)
 
         if box is None:
-            # 인물이 프레임에서 벗어났거나 가려져서 Gemini가 null을 반환한 경우 (Missing)
-            # 기본 동작: 점진적으로 원본 전체 화면을 잡도록(Center Crop) 목표 좌표를 설정합니다.
-            # (EMA나 Kalman 필터를 거쳐 부드럽게 줌아웃 됩니다)
+            # Missing handling
             cx, cy = in_w / 2, in_h / 2
             ch = in_h
             cw = ch * target_aspect
@@ -368,15 +371,24 @@ def render_fancam(
                 bx, by = (x1 + x2) / 2, (y1 + y2) / 2
                 bw, bh = (x2 - x1) * cfg.margin, (y2 - y1) * cfg.margin
                 
-                # Minimum height bound to prevent excessively zoomed-in crops (e.g. only eyes visible).
-                # The crop should at least cover 35% of the video height (for 9:16) to maintain context.
+                # Minimum height bound
                 min_h = in_h * 0.35 
                 
                 ch = max(bh, bw / target_aspect)
-                ch = max(ch, min_h) # 안전을 위한 최소 줌 아웃 강제
+                ch = max(ch, min_h)
                 
                 cw = ch * target_aspect
                 cx, cy = bx, by
+
+        # 시네마틱 딜레이 큐 (편집자 레이턴시 느낌 구현)
+        if cfg.cinema_delay_frames > 0:
+            target_queue.append((cx, cy, cw, ch))
+            if len(target_queue) < cfg.cinema_delay_frames:
+                # 버퍼가 덜 찼을 땐 현재 좌표를 억지로라도 고정
+                cx, cy, cw, ch = target_queue[0]
+            else:
+                # 버퍼 맨 앞(N프레임 이전의 좌표)을 목표지점으로 삼음
+                cx, cy, cw, ch = target_queue[0]
 
         # Smoothing & Constraints
         if cfg.use_kalman:
@@ -529,6 +541,7 @@ def make_fancam(
     ab_compare: bool = False,
     auto_cut: bool = False,
     model: str = "gemini-3-flash-preview",
+    cinema_delay_frames: int = 0,
     progress=None
 ) -> Tuple[str, dict]:
 
@@ -563,7 +576,8 @@ def make_fancam(
 
         cfg = CropConfig(
             out_w=out_w, out_h=out_h, margin=margin, 
-            smooth_alpha=smooth_alpha, use_kalman=use_kalman, ab_compare=ab_compare
+            smooth_alpha=smooth_alpha, use_kalman=use_kalman, ab_compare=ab_compare,
+            cinema_delay_frames=cinema_delay_frames
         )
         
         if progress: progress(0.8, desc="4/5: 자연스러운 직캠 카메라 워킹 렌더링 중...")
@@ -642,6 +656,7 @@ class GenerateRequest(BaseModel):
     ab_compare: bool = False
     auto_cut: bool = False
     model: str = "gemini-3-flash-preview"
+    cinema_delay_frames: int = 0
 
 @app.post("/api/upload")
 async def api_upload(file: UploadFile = File(...)):
@@ -712,7 +727,8 @@ async def api_generate(req: GenerateRequest):
             use_kalman=req.use_kalman,
             ab_compare=req.ab_compare,
             auto_cut=req.auto_cut,
-            model=req.model
+            model=req.model,
+            cinema_delay_frames=req.cinema_delay_frames
         )
         
         # 결과를 outputs 폴더로 이동하여 브라우저에서 접근 가능하게 처리
