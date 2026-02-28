@@ -8,27 +8,57 @@ const IconZap = () => (<svg width="32" height="32" viewBox="0 0 24 24" fill="non
 const IconTarget = () => (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>);
 const IconPlay = () => (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>);
 const IconShare = () => (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>);
-const IconTrophy = () => (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6M18 9h1.5a2.5 2.5 0 000-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 19.24 7 20v2h10v-2c0-.76-.85-1.25-2.03-1.79A1.07 1.07 0 0114 17v-2.34"/><path d="M18 2H6v7a6 6 0 1012 0V2z"/></svg>);
-const IconScissors = () => (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>);
-const IconCpu = () => (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>);
+const IconMusic = () => (<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="15.5" r="2.5"/><path d="M8 17V5l13-2v12"/></svg>);
+const IconSports = () => (<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 000 20 14.5 14.5 0 000-20"/><path d="M2 12h20"/></svg>);
+const IconHorse = () => (<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 3s-4 2-6 2-4-2-6-2-6 2-6 2"/><path d="M4 3v10c0 4 4 8 8 8s8-4 8-8V3"/><path d="M12 21v-4"/><path d="M8 17l-2 4M16 17l2 4"/></svg>);
+const IconDrone = () => (<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><rect x="8" y="10" width="8" height="6" rx="1"/><path d="M4 6a2 2 0 104 0 2 2 0 10-4 0M16 6a2 2 0 104 0 2 2 0 10-4 0"/><path d="M6 8v2h2M18 8v2h-2"/><path d="M10 16v2M14 16v2"/></svg>);
 
 const FEATURES = [
-  { icon: <IconTarget />, title: 'AI 멤버 추적', desc: 'Google Gemini Vision AI가 영상 속 특정 멤버를 프레임 단위로 정밀 추적합니다.', color: '#8b5cf6' },
-  { icon: <IconZap />, title: '원클릭 직캠 생성', desc: '클릭 한 번으로 멤버별 세로형 직캠을 자동 생성합니다. 크롭, 안정화까지 자동 처리.', color: '#3b82f6' },
-  { icon: <IconShare />, title: 'YouTube Shorts 등록', desc: '생성된 직캠을 바로 YouTube Shorts로 업로드할 수 있습니다.', color: '#06b6d4' },
+  { icon: <IconTarget />, title: 'AI Object Tracking', desc: 'Google Gemini Vision AI precisely tracks any target in your video frame by frame — people, athletes, or animals.', color: '#8b5cf6' },
+  { icon: <IconZap />, title: 'One-Click Follow Cam', desc: 'Automatically generate a follow-cam edit with a single click. Auto-crop, stabilize, and reframe — all handled by AI.', color: '#3b82f6' },
+  { icon: <IconShare />, title: 'Export & Share Instantly', desc: 'Download your edited video or upload directly to YouTube Shorts in seconds.', color: '#06b6d4' },
 ];
 
 const STEPS = [
-  { num: '01', icon: <IconUpload />, title: '영상 업로드', desc: 'YouTube URL을 붙여넣거나 영상 파일을 직접 업로드하세요.' },
-  { num: '02', icon: <IconTarget />, title: '멤버 선택', desc: '영상 프레임에서 추적할 멤버를 클릭으로 간편하게 지정합니다.' },
-  { num: '03', icon: <IconCamera />, title: 'AI 직캠 생성', desc: 'Gemini AI가 멤버를 프레임별로 추적하여 고품질 직캠을 생성합니다.' },
-  { num: '04', icon: <IconPlay />, title: '결과 확인 & 공유', desc: '원본 대비 직캠을 확인하고 YouTube Shorts로 바로 올릴 수 있습니다.' },
+  { num: '01', icon: <IconUpload />, title: 'Upload Video', desc: 'Paste a YouTube URL or upload a video file directly from your device.' },
+  { num: '02', icon: <IconTarget />, title: 'Select Target', desc: 'Click on the subject you want to follow in the video frame — a person, player, or any moving object.' },
+  { num: '03', icon: <IconCamera />, title: 'AI Follow Cam', desc: 'Gemini AI tracks the target frame-by-frame and generates a smooth, professional follow-cam edit.' },
+  { num: '04', icon: <IconPlay />, title: 'Review & Share', desc: 'Compare the result with the original and export to YouTube Shorts or download.' },
 ];
 
-const FUTURE = [
-  { icon: <IconTrophy />, title: '스포츠 하이라이트', desc: '축구, 농구 등 스포츠 경기 영상에서 자동으로 하이라이트를 생성합니다.', tag: 'Coming Soon' },
-  { icon: <IconScissors />, title: '자동 컷편집 & 크롭', desc: '영상 종류에 관계없이 AI가 최적의 컷편집과 자동 크롭을 수행합니다.', tag: 'Planned' },
-  { icon: <IconCpu />, title: '영상 편집 자동화', desc: '하나의 영상으로 컷편집, 크롭, 팬캠, 편집을 모두 자동화하는 시스템입니다.', tag: 'Vision' },
+const USE_CASES = [
+  {
+    icon: <IconMusic />,
+    title: 'K-POP Fancam Generator',
+    desc: 'Turn a full-stage K-POP performance into individual member fancams. Just click the member you want — AI handles the rest.',
+    gradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+    tag: 'Most Popular',
+    preview: '🎤',
+  },
+  {
+    icon: <IconSports />,
+    title: 'Sports Follow Cam',
+    desc: 'Track a specific player on the field — soccer, basketball, baseball, or any sport. Generate highlight reels focused on one athlete.',
+    gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+    tag: 'New',
+    preview: '⚽',
+  },
+  {
+    icon: <IconHorse />,
+    title: 'Horse Racing Follow',
+    desc: 'Lock onto a specific horse and jockey throughout the race. Perfect for race analysis, replays, and highlight clips.',
+    gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+    tag: 'Coming Soon',
+    preview: '🏇',
+  },
+  {
+    icon: <IconDrone />,
+    title: 'Drone & Surveillance',
+    desc: 'Automatically track moving objects in aerial or surveillance footage. Ideal for security review and patrol monitoring.',
+    gradient: 'linear-gradient(135deg, #10b981, #3b82f6)',
+    tag: 'Planned',
+    preview: '📡',
+  },
 ];
 
 function useReveal(threshold = 0.15) {
@@ -59,6 +89,8 @@ function RevealSection({ children, className = '', delay = 0, direction = 'up' }
 
 export default function Landing() {
   const particlesRef = useRef(null);
+  const showcaseRef = useRef(null);
+  const [activeCase, setActiveCase] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -96,6 +128,23 @@ export default function Landing() {
     return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveCase(prev => (prev + 1) % USE_CASES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const scrollToCase = (idx) => {
+    setActiveCase(idx);
+    if (showcaseRef.current) {
+      const card = showcaseRef.current.children[idx];
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  };
+
   return (
     <div className="landing">
       <section className="hero">
@@ -104,51 +153,86 @@ export default function Landing() {
         <div className="hero__content">
           <div className="hero__badge"><span className="hero__badge-dot" />Powered by Google Gemini AI</div>
           <h1 className="hero__title">
-            <span className="hero__title-line">K-POP 무대 영상 하나로</span>
-            <span className="hero__title-line hero__title-line--accent"><span className="gradient-text">AI 직캠</span>을 만듭니다</span>
+            <span className="hero__title-line">Automate Video Editing</span>
+            <span className="hero__title-line hero__title-line--accent">with <span className="gradient-text">AI Follow Cam</span></span>
           </h1>
-          <p className="hero__subtitle">전체 무대 직캠에서 원하는 멤버를 클릭하면,<br />AI가 자동으로 추적하여 개인 직캠을 생성합니다.</p>
+          <p className="hero__subtitle">Upload any video, click a target, and let AI automatically<br />track, crop, and generate a professional follow-cam edit.</p>
           <div className="hero__actions">
-            <Link to="/converter" className="btn btn-primary btn-lg">직캠 만들러 가기 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link>
-            <a href="#how-it-works" className="btn btn-secondary btn-lg">사용 방법 보기</a>
+            <Link to="/converter" className="btn btn-primary btn-lg">Get Started <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link>
+            <a href="#use-cases" className="btn btn-secondary btn-lg">See Use Cases</a>
           </div>
         </div>
         <div className="hero__visual">
           <div className="hero__mockup">
-            <div className="hero__mockup-header"><div className="hero__mockup-dots"><span /><span /><span /></div><span className="hero__mockup-title">FanCam AI Converter</span></div>
+            <div className="hero__mockup-header"><div className="hero__mockup-dots"><span /><span /><span /></div><span className="hero__mockup-title">FollowCam AI — Video Editor</span></div>
             <div className="hero__mockup-body">
-              <div className="hero__mockup-left"><div className="hero__mockup-video-placeholder"><div className="hero__mockup-scan-line" /><div className="hero__mockup-target-box" /><span>원본 영상</span></div></div>
+              <div className="hero__mockup-left"><div className="hero__mockup-video-placeholder"><div className="hero__mockup-scan-line" /><div className="hero__mockup-target-box" /><span>Source Video</span></div></div>
               <div className="hero__mockup-arrow"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{color:'var(--accent-purple)'}}><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-              <div className="hero__mockup-right"><div className="hero__mockup-result-placeholder"><span>AI 직캠</span></div></div>
+              <div className="hero__mockup-right"><div className="hero__mockup-result-placeholder"><span>AI Follow Cam</span></div></div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* ── Use Cases Horizontal Showcase ── */}
+      <section className="section" id="use-cases">
+        <div className="section__container">
+          <RevealSection>
+            <div className="section__header">
+              <span className="section__label gradient-text">Use Cases</span>
+              <h2 className="section__title">One Engine, Endless Possibilities</h2>
+              <p className="section__desc">AI-powered Follow Cam editing works across industries — from entertainment to sports to surveillance.</p>
+            </div>
+          </RevealSection>
+
+          <RevealSection delay={0.15}>
+            <div className="showcase-wrapper">
+              <div className="showcase-scroll" ref={showcaseRef}>
+                {USE_CASES.map((uc, i) => (
+                  <div
+                    key={i}
+                    className={`showcase-card glass ${activeCase === i ? 'showcase-card--active' : ''}`}
+                    onClick={() => scrollToCase(i)}
+                  >
+                    <div className="showcase-card__tag" style={{ background: uc.gradient }}>{uc.tag}</div>
+                    <div className="showcase-card__preview" style={{ background: uc.gradient }}>
+                      <span className="showcase-card__emoji">{uc.preview}</span>
+                      <div className="showcase-card__icon">{uc.icon}</div>
+                    </div>
+                    <div className="showcase-card__body">
+                      <h3>{uc.title}</h3>
+                      <p>{uc.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="showcase-dots">
+                {USE_CASES.map((_, i) => (
+                  <button key={i} className={`showcase-dot ${activeCase === i ? 'showcase-dot--active' : ''}`} onClick={() => scrollToCase(i)} />
+                ))}
+              </div>
+            </div>
+          </RevealSection>
+        </div>
+      </section>
+
       <section className="section" id="features">
         <div className="section__container">
-          <RevealSection><div className="section__header"><span className="section__label gradient-text">Features</span><h2 className="section__title">왜 FanCam AI인가요?</h2><p className="section__desc">AI 기술로 누구나 쉽게 프로 수준의 직캠을 만들 수 있습니다.</p></div></RevealSection>
+          <RevealSection><div className="section__header"><span className="section__label gradient-text">Features</span><h2 className="section__title">Why FollowCam AI?</h2><p className="section__desc">Powered by Gemini Vision AI, anyone can create professional-grade follow-cam edits in minutes.</p></div></RevealSection>
           <div className="features-grid">{FEATURES.map((f, i) => (<RevealSection key={i} delay={i * 0.12}><div className="feature-card glass"><div className="feature-card__icon" style={{ color: f.color, borderColor: `${f.color}33`, background: `${f.color}11` }}>{f.icon}</div><h3 className="feature-card__title">{f.title}</h3><p className="feature-card__desc">{f.desc}</p></div></RevealSection>))}</div>
         </div>
       </section>
 
       <section className="section" id="how-it-works">
         <div className="section__container">
-          <RevealSection><div className="section__header"><span className="section__label gradient-text">How It Works</span><h2 className="section__title">4단계로 완성되는 직캠</h2><p className="section__desc">복잡한 영상 편집 없이 몇 번의 클릭으로 직캠을 생성하세요.</p></div></RevealSection>
+          <RevealSection><div className="section__header"><span className="section__label gradient-text">How It Works</span><h2 className="section__title">4 Simple Steps to a Follow Cam</h2><p className="section__desc">No complex editing software required — just a few clicks and AI does the rest.</p></div></RevealSection>
           <div className="steps">{STEPS.map((s, i) => (<RevealSection key={i} delay={i * 0.1} direction="left"><div className="step-item"><div className="step-item__num">{s.num}</div><div className="step-item__content glass"><div className="step-item__icon">{s.icon}</div><h3>{s.title}</h3><p>{s.desc}</p></div></div></RevealSection>))}</div>
         </div>
       </section>
 
-      <section className="section" id="future">
-        <div className="section__container">
-          <RevealSection><div className="section__header"><span className="section__label gradient-text">Roadmap</span><h2 className="section__title">더 넓은 가능성</h2><p className="section__desc">직캠을 넘어, 모든 영상의 AI 자동 편집을 목표로 합니다.</p></div></RevealSection>
-          <div className="future-grid">{FUTURE.map((f, i) => (<RevealSection key={i} delay={i * 0.12}><div className="future-card glass"><div className="future-card__tag">{f.tag}</div><div className="future-card__icon">{f.icon}</div><h3>{f.title}</h3><p>{f.desc}</p></div></RevealSection>))}</div>
-        </div>
-      </section>
+      <section className="section"><div className="section__container"><RevealSection><div className="cta"><div className="cta__bg" /><div className="cta__content"><h2>Ready to Automate Your Video Editing?</h2><p>All you need is a video URL or file. Start for free — no editing skills required.</p><Link to="/converter" className="btn btn-primary btn-lg">Start Editing <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link></div></div></RevealSection></div></section>
 
-      <section className="section"><div className="section__container"><RevealSection><div className="cta"><div className="cta__bg" /><div className="cta__content"><h2>지금 바로 AI 직캠을 만들어보세요</h2><p>K-POP 무대 영상 URL만 있으면 됩니다. 무료로 시작하세요.</p><Link to="/converter" className="btn btn-primary btn-lg">시작하기 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link></div></div></RevealSection></div></section>
-
-      <footer className="footer"><div className="footer__inner"><span className="footer__logo gradient-text">FanCam AI</span><span className="footer__copy">Built with Google Gemini &middot; Hackathon 2026</span></div></footer>
+      <footer className="footer"><div className="footer__inner"><span className="footer__logo gradient-text">FollowCam AI</span><span className="footer__copy">Built with Google Gemini &middot; Hackathon 2026</span></div></footer>
 
       <style>{`
         .landing { overflow-x: hidden; }
@@ -185,6 +269,103 @@ export default function Landing() {
         .hero__mockup-arrow { flex-shrink: 0; display: flex; align-items: center; }
         .hero__mockup-right { flex: 1; }
         .hero__mockup-result-placeholder { aspect-ratio: 9/16; max-height: 180px; background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(139,92,246,0.08)); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.85rem; }
+
+        /* ── Showcase horizontal scroll ── */
+        .showcase-wrapper { position: relative; }
+        .showcase-scroll {
+          display: flex;
+          gap: 24px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          scroll-behavior: smooth;
+          padding: 8px 4px 24px;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .showcase-scroll::-webkit-scrollbar { display: none; }
+        .showcase-card {
+          flex: 0 0 320px;
+          scroll-snap-align: center;
+          cursor: pointer;
+          transition: all 0.4s var(--ease-out-expo);
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+        }
+        .showcase-card:hover { transform: translateY(-8px); border-color: var(--border-accent); box-shadow: var(--shadow-glow); }
+        .showcase-card--active { border-color: var(--accent-purple); box-shadow: 0 0 30px rgba(139, 92, 246, 0.25); transform: translateY(-4px); }
+        .showcase-card__tag {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 2;
+          padding: 4px 12px;
+          border-radius: var(--radius-full);
+          font-size: 0.65rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #fff;
+        }
+        .showcase-card__preview {
+          position: relative;
+          height: 160px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .showcase-card__emoji {
+          font-size: 3.5rem;
+          position: relative;
+          z-index: 1;
+          filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+        }
+        .showcase-card__icon {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          opacity: 0.25;
+          color: #fff;
+        }
+        .showcase-card__body {
+          padding: 24px;
+          flex: 1;
+        }
+        .showcase-card__body h3 {
+          font-family: var(--font-display);
+          font-size: 1.15rem;
+          font-weight: 700;
+          margin-bottom: 8px;
+        }
+        .showcase-card__body p {
+          font-size: 0.88rem;
+          color: var(--text-secondary);
+          line-height: 1.65;
+        }
+        .showcase-dots {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 8px;
+        }
+        .showcase-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: var(--border-light);
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          padding: 0;
+        }
+        .showcase-dot--active {
+          background: var(--accent-purple);
+          box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+          transform: scale(1.2);
+        }
+
         .section { padding: 100px 24px; position: relative; }
         .section__container { max-width: 1100px; margin: 0 auto; }
         .section__header { text-align: center; margin-bottom: 60px; }
@@ -206,14 +387,6 @@ export default function Landing() {
         .step-item__icon { color: var(--accent-cyan); margin-bottom: 12px; }
         .step-item__content h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
         .step-item__content p { font-size: 0.9rem; color: var(--text-secondary); }
-        .future-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        @media (max-width: 768px) { .future-grid { grid-template-columns: 1fr; } }
-        .future-card { padding: 32px 24px; text-align: center; transition: all 0.35s var(--ease-out-expo); }
-        .future-card:hover { transform: translateY(-4px); border-color: var(--border-accent); }
-        .future-card__tag { display: inline-block; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(139, 92, 246, 0.12); color: var(--accent-purple); border: 1px solid rgba(139, 92, 246, 0.2); margin-bottom: 20px; }
-        .future-card__icon { color: var(--accent-cyan); margin-bottom: 16px; }
-        .future-card h3 { font-family: var(--font-display); font-weight: 700; margin-bottom: 8px; }
-        .future-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
         .cta { position: relative; border-radius: var(--radius-xl); overflow: hidden; padding: 80px 40px; text-align: center; }
         .cta__bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.1), rgba(6,182,212,0.08)); border: 1px solid var(--border-accent); border-radius: inherit; }
         .cta__content { position: relative; z-index: 1; }
@@ -223,7 +396,15 @@ export default function Landing() {
         .footer__inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
         .footer__logo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
         .footer__copy { font-size: 0.8rem; color: var(--text-muted); }
-        @media (max-width: 768px) { .hero { padding: 100px 20px 60px; } .hero__title { font-size: 2rem; } .hero__mockup-body { flex-direction: column; } .hero__mockup-arrow { transform: rotate(90deg); } .section { padding: 60px 20px; } .footer__inner { flex-direction: column; gap: 12px; text-align: center; } }
+        @media (max-width: 768px) {
+          .hero { padding: 100px 20px 60px; }
+          .hero__title { font-size: 2rem; }
+          .hero__mockup-body { flex-direction: column; }
+          .hero__mockup-arrow { transform: rotate(90deg); }
+          .section { padding: 60px 20px; }
+          .footer__inner { flex-direction: column; gap: 12px; text-align: center; }
+          .showcase-card { flex: 0 0 280px; }
+        }
       `}</style>
     </div>
   );

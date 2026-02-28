@@ -229,7 +229,7 @@ export default function VideoComparison({ originalVideoPath, resultVideoUrl, jso
       <div className="vc__videos">
         {showOriginal && (
           <div className="vc__panel">
-            <div className="vc__label">원본 영상</div>
+            <div className="vc__label">Original Video</div>
             <div className="vc__video-wrapper">
               <video
                 ref={originalRef}
@@ -244,7 +244,7 @@ export default function VideoComparison({ originalVideoPath, resultVideoUrl, jso
           </div>
         )}
         <div className="vc__panel vc__panel--result">
-          <div className="vc__label gradient-text">AI 직캠</div>
+          <div className="vc__label gradient-text">AI Follow Cam</div>
           <div className="vc__video-wrapper">
             <video
               ref={resultRef}
@@ -260,7 +260,7 @@ export default function VideoComparison({ originalVideoPath, resultVideoUrl, jso
       </div>
 
       <div className="vc__controls glass">
-        <button className="vc__btn" onClick={() => skip(-5)} title="-5초">
+        <button className="vc__btn" onClick={() => skip(-5)} title="-5s">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/>
           </svg>
@@ -276,7 +276,7 @@ export default function VideoComparison({ originalVideoPath, resultVideoUrl, jso
             </svg>
           )}
         </button>
-        <button className="vc__btn" onClick={() => skip(5)} title="+5초">
+        <button className="vc__btn" onClick={() => skip(5)} title="+5s">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/>
           </svg>
@@ -299,7 +299,7 @@ export default function VideoComparison({ originalVideoPath, resultVideoUrl, jso
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
             </svg>
-            직캠 다운로드
+            Download Follow Cam
           </a>
         </div>
       )}

@@ -9,7 +9,7 @@ export async function uploadVideo(file) {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || "업로드 실패")
+    throw new Error(err.detail || "Upload failed")
   }
   return res.json()
 }
@@ -22,7 +22,7 @@ export async function downloadYoutube(url, resolution = "720p") {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || "다운로드 실패")
+    throw new Error(err.detail || "Download failed")
   }
   return res.json()
 }
@@ -35,7 +35,7 @@ export async function getVideoInfo(videoPath) {
   const res = await fetch(
     `${API_BASE}/api/video_info?video_path=${encodeURIComponent(videoPath)}`,
   )
-  if (!res.ok) throw new Error("영상 정보를 가져올 수 없습니다")
+  if (!res.ok) throw new Error("Failed to retrieve video info")
   return res.json()
 }
 
@@ -47,7 +47,7 @@ export async function generateFancam(options) {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || "생성 실패")
+    throw new Error(err.detail || "Generation failed")
   }
   return res.json()
 }
@@ -69,7 +69,7 @@ export async function recommendShortsMeta(targetDescription) {
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || "추천 생성 실패")
+    throw new Error(err.detail || "Recommendation failed")
   }
   return res.json()
 }
@@ -92,7 +92,7 @@ export async function uploadToYouTube({
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err.detail || "유튜브 업로드 실패")
+    throw new Error(err.detail || "YouTube upload failed")
   }
   return res.json()
 }

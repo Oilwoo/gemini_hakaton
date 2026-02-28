@@ -133,7 +133,7 @@ export default function Converter() {
     const file = fileRef.current?.files?.[0]
     if (!file) return
     setLoading(true)
-    setLoadMsg("영상 업로드 중...")
+    setLoadMsg("Uploading video...")
     try {
       const data = await uploadVideo(file)
       setVideoPath(data.video_path)
@@ -152,7 +152,7 @@ export default function Converter() {
   const handleYoutube = useCallback(async () => {
     if (!ytUrl.trim()) return
     setLoading(true)
-    setLoadMsg("YouTube 영상 다운로드 중... (1~3분 소요될 수 있습니다)")
+    setLoadMsg("Downloading YouTube video... (may take 1–3 minutes)")
     try {
       const data = await downloadYoutube(ytUrl.trim())
       setVideoPath(data.video_path)
@@ -191,7 +191,7 @@ export default function Converter() {
 
   const handleGenerate = useCallback(async () => {
     setGenerating(true)
-    setGenMsg("AI가 영상을 분석하고 있습니다...")
+    setGenMsg("AI is analyzing the video...")
     setError("")
     try {
       const payload = {
@@ -206,7 +206,7 @@ export default function Converter() {
         out_ratio: outRatio,
         margin,
       }
-      setGenMsg("Gemini AI가 멤버를 추적하고 있습니다...")
+      setGenMsg("Gemini AI is tracking the target...")
       const data = await generateFancam(payload)
       setResult(data)
       setStep(3)
@@ -230,7 +230,7 @@ export default function Converter() {
     setRecommending(true)
     setError("")
     try {
-      const desc = targetDesc || "직캠 대상"
+      const desc = targetDesc || "follow cam target"
       const data = await recommendShortsMeta(desc)
       setShortsTitle(data.title || "")
       setShortsDesc(data.description || "")
@@ -285,9 +285,9 @@ export default function Converter() {
   const renderStep0 = () => (
     <div className="conv-step fade-in">
       <div className="conv-step__header">
-        <h2 className="conv-step__title">영상을 선택하세요</h2>
+        <h2 className="conv-step__title">Select a Video</h2>
         <p className="conv-step__desc">
-          직캠을 생성할 원본 영상을 업로드하거나 YouTube URL을 입력하세요.
+          Upload a video file or paste a YouTube URL to start your follow-cam edit.
         </p>
       </div>
 
@@ -299,8 +299,8 @@ export default function Converter() {
           <div className="source-card__icon">
             <UploadIcon />
           </div>
-          <h3>파일 업로드</h3>
-          <p>로컬 영상 파일을 직접 업로드합니다</p>
+          <h3>File Upload</h3>
+          <p>Upload a video file from your device</p>
         </div>
         <div
           className={`source-card glass ${sourceMode === "youtube" ? "source-card--active" : ""}`}
@@ -310,7 +310,7 @@ export default function Converter() {
             <YoutubeIcon />
           </div>
           <h3>YouTube URL</h3>
-          <p>YouTube 영상 주소를 붙여넣으세요</p>
+          <p>Paste a YouTube video link</p>
         </div>
       </div>
 
@@ -329,7 +329,7 @@ export default function Converter() {
             disabled={loading}
             style={{ marginTop: 12, width: "100%" }}
           >
-            {loading ? loadMsg : "업로드 시작"}
+            {loading ? loadMsg : "Start Upload"}
           </button>
         </div>
       )}
@@ -350,7 +350,7 @@ export default function Converter() {
             disabled={loading}
             style={{ marginTop: 12, width: "100%" }}
           >
-            {loading ? loadMsg : "다운로드 시작"}
+            {loading ? loadMsg : "Start Download"}
           </button>
         </div>
       )}
@@ -360,9 +360,9 @@ export default function Converter() {
   const renderStep1 = () => (
     <div className="conv-step fade-in">
       <div className="conv-step__header">
-        <h2 className="conv-step__title">타겟 멤버를 선택하세요</h2>
+        <h2 className="conv-step__title">Select Your Target</h2>
         <p className="conv-step__desc">
-          아래 프레임에서 추적할 대상을 클릭하고 구간을 설정하세요.
+          Click on the subject you want to track in the frame below, then set the time range.
         </p>
       </div>
 
@@ -396,7 +396,7 @@ export default function Converter() {
             <div className="frame-preview__info">
               <CheckCircle />
               <span>
-                타겟 선택 완료 (X: {clickCoords.x}, Y: {clickCoords.y})
+                Target selected (X: {clickCoords.x}, Y: {clickCoords.y})
               </span>
             </div>
           )}
@@ -404,7 +404,7 @@ export default function Converter() {
 
         <div className="time-range">
           <div className="time-range__group">
-            <label className="label">시작 시간 (초)</label>
+            <label className="label">Start Time (sec)</label>
             <input
               type="number"
               className="input"
@@ -415,7 +415,7 @@ export default function Converter() {
             />
           </div>
           <div className="time-range__group">
-            <label className="label">끝 시간 (초)</label>
+            <label className="label">End Time (sec)</label>
             <input
               type="number"
               className="input"
@@ -427,17 +427,17 @@ export default function Converter() {
           </div>
           {videoInfo && (
             <div className="time-range__duration">
-              전체 길이: {videoInfo.duration.toFixed(1)}초
+              Total duration: {videoInfo.duration.toFixed(1)}s
             </div>
           )}
         </div>
 
         <div className="target-desc-input">
-          <label className="label">추가 설명 (선택사항)</label>
+          <label className="label">Additional Description (optional)</label>
           <input
             type="text"
             className="input"
-            placeholder="예: 흰색 상의를 입은 센터 멤버"
+            placeholder="e.g. The person wearing a white top in the center"
             value={targetDesc}
             onChange={(e) => setTargetDesc(e.target.value)}
           />
@@ -452,10 +452,10 @@ export default function Converter() {
             setSourceMode(null)
           }}
         >
-          <ArrowLeft /> 뒤로
+          <ArrowLeft /> Back
         </button>
         <button className="btn btn-primary" onClick={() => setStep(2)}>
-          다음 단계 <ArrowRight />
+          Next Step <ArrowRight />
         </button>
       </div>
     </div>
@@ -464,18 +464,18 @@ export default function Converter() {
   const renderStep2 = () => (
     <div className="conv-step fade-in">
       <div className="conv-step__header">
-        <h2 className="conv-step__title">생성 옵션</h2>
-        <p className="conv-step__desc">출력 비율과 크롭 여백을 설정하세요.</p>
+        <h2 className="conv-step__title">Output Options</h2>
+        <p className="conv-step__desc">Set the output aspect ratio and crop margin.</p>
       </div>
 
       <div className="options-grid">
         <div className="option-group">
-          <label className="label">출력 비율</label>
+          <label className="label">Aspect Ratio</label>
           <div className="ratio-cards">
             {[
-              { value: "9:16", label: "9:16", sub: "세로 직캠 / Shorts" },
-              { value: "16:9", label: "16:9", sub: "가로 원본 유지" },
-              { value: "1:1", label: "1:1", sub: "인스타그램" },
+              { value: "9:16", label: "9:16", sub: "Vertical / Shorts" },
+              { value: "16:9", label: "16:9", sub: "Landscape" },
+              { value: "1:1", label: "1:1", sub: "Instagram" },
             ].map((r) => (
               <div
                 key={r.value}
@@ -493,7 +493,7 @@ export default function Converter() {
         </div>
 
         <div className="option-group">
-          <label className="label">크롭 여백: {margin.toFixed(1)}</label>
+          <label className="label">Crop Margin: {margin.toFixed(1)}</label>
           <input
             type="range"
             min="1.0"
@@ -504,15 +504,15 @@ export default function Converter() {
             className="range-input"
           />
           <div className="range-labels">
-            <span>타이트 (1.0)</span>
-            <span>넓음 (2.5)</span>
+            <span>Tight (1.0)</span>
+            <span>Wide (2.5)</span>
           </div>
         </div>
       </div>
 
       <div className="conv-step__actions">
         <button className="btn btn-ghost" onClick={() => setStep(1)}>
-          <ArrowLeft /> 뒤로
+          <ArrowLeft /> Back
         </button>
         <button
           className="btn btn-primary btn-lg"
@@ -520,7 +520,7 @@ export default function Converter() {
           disabled={generating}
           style={{ minWidth: 200 }}
         >
-          {generating ? "생성 중..." : "직캠 생성 시작"}
+          {generating ? "Generating..." : "Start Follow Cam"}
           {!generating && <ArrowRight />}
         </button>
       </div>
@@ -535,13 +535,13 @@ export default function Converter() {
           <div className="generating-spinner__ring generating-spinner__ring--2" />
           <div className="generating-spinner__core" />
         </div>
-        <h2>AI 직캠 생성 중</h2>
+        <h2>Generating AI Follow Cam</h2>
         <p className="generating-msg">{genMsg}</p>
         <div className="generating-tips">
           <div className="generating-tip glass">
             <span>
-              Gemini AI가 영상 속 타겟을 프레임 단위로 분석하고 있습니다. 영상
-              길이에 따라 1~5분 정도 소요될 수 있습니다.
+              Gemini AI is analyzing the target frame by frame.
+              This may take 1–5 minutes depending on the video length.
             </span>
           </div>
         </div>
@@ -557,9 +557,9 @@ export default function Converter() {
   const renderStep3 = () => (
     <div className="conv-step fade-in">
       <div className="conv-step__header">
-        <h2 className="conv-step__title gradient-text">직캠 생성 완료!</h2>
+        <h2 className="conv-step__title gradient-text">Follow Cam Complete!</h2>
         <p className="conv-step__desc">
-          원본 영상과 생성된 직캠을 비교해보세요.
+          Compare the result with the original video side by side.
         </p>
       </div>
 
@@ -581,8 +581,8 @@ export default function Converter() {
                 </svg>
               </div>
               <div>
-                <h3>YouTube Shorts로 업로드</h3>
-                <p>생성된 직캠을 바로 Shorts로 올려보세요</p>
+                <h3>Upload to YouTube Shorts</h3>
+                <p>Share your follow-cam edit directly to YouTube Shorts</p>
               </div>
             </div>
 
@@ -593,31 +593,31 @@ export default function Converter() {
                     <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
                 </div>
-                <h3>업로드 완료!</h3>
-                <p>YouTube Shorts에 성공적으로 업로드되었습니다.</p>
+                <h3>Upload Complete!</h3>
+                <p>Successfully uploaded to YouTube Shorts.</p>
                 <a href={uploadResult.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                  YouTube에서 보기
+                  View on YouTube
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
                 </a>
               </div>
             ) : (
               <div className="shorts-section__form">
                 <div className="shorts-section__field">
-                  <label className="label">제목</label>
+                  <label className="label">Title</label>
                   <input
                     type="text"
                     className="input"
-                    placeholder="예: [직캠] 에스파 카리나 - Supernova #Shorts"
+                    placeholder="e.g. [FollowCam] Player Highlight — Game #Shorts"
                     value={shortsTitle}
                     onChange={(e) => setShortsTitle(e.target.value)}
                   />
                 </div>
                 <div className="shorts-section__field">
-                  <label className="label">설명</label>
+                  <label className="label">Description</label>
                   <textarea
                     className="input"
                     rows={3}
-                    placeholder="영상에 대한 설명과 해시태그를 입력하세요...&#10;예: #Shorts #Fancam #KPOP"
+                    placeholder="Add a description and hashtags...&#10;e.g. #Shorts #FollowCam #Highlights"
                     value={shortsDesc}
                     onChange={(e) => setShortsDesc(e.target.value)}
                     style={{ resize: "vertical", minHeight: 90 }}
@@ -625,15 +625,15 @@ export default function Converter() {
                 </div>
                 <div className="shorts-section__row">
                   <div className="shorts-section__field">
-                    <label className="label">공개 범위</label>
+                    <label className="label">Visibility</label>
                     <select className="select" value={shortsPrivacy} onChange={(e) => setShortsPrivacy(e.target.value)}>
-                      <option value="public">공개 (Public)</option>
-                      <option value="unlisted">미등록 (Unlisted)</option>
-                      <option value="private">비공개 (Private)</option>
+                      <option value="public">Public</option>
+                      <option value="unlisted">Unlisted</option>
+                      <option value="private">Private</option>
                     </select>
                   </div>
                   <div className="shorts-section__field">
-                    <label className="label">AI 자동 입력</label>
+                    <label className="label">AI Auto-Fill</label>
                     <button
                       className="btn btn-secondary"
                       onClick={handleRecommend}
@@ -641,11 +641,11 @@ export default function Converter() {
                       style={{ width: '100%', height: '44px' }}
                     >
                       {recommending ? (
-                        <><span className="btn-spinner" /> 생성 중...</>
+                        <><span className="btn-spinner" /> Generating...</>
                       ) : (
                         <>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                          AI 제목/설명 추천
+                          AI Title & Description
                         </>
                       )}
                     </button>
@@ -658,11 +658,11 @@ export default function Converter() {
                   style={{ width: '100%' }}
                 >
                   {uploading ? (
-                    <><span className="btn-spinner" /> YouTube 업로드 중...</>
+                    <><span className="btn-spinner" /> Uploading to YouTube...</>
                   ) : (
                     <>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" /></svg>
-                      YouTube Shorts 업로드
+                      Upload to YouTube Shorts
                     </>
                   )}
                 </button>
@@ -672,7 +672,7 @@ export default function Converter() {
 
           <div className="conv-step__actions" style={{ marginTop: 32 }}>
             <button className="btn btn-secondary" onClick={resetAll}>
-              새로운 직캠 만들기
+              Create New Follow Cam
             </button>
             {result.json_url && (
               <a
@@ -681,7 +681,7 @@ export default function Converter() {
                 rel="noopener noreferrer"
                 className="btn btn-ghost"
               >
-                트래킹 JSON 보기
+                View Tracking JSON
               </a>
             )}
           </div>
@@ -697,7 +697,7 @@ export default function Converter() {
       {/* Progress bar */}
       <div className="conv-progress">
         <div className="conv-progress__inner">
-          {["영상 선택", "타겟 설정", "옵션", "결과"].map((label, i) => (
+          {["Video", "Target", "Options", "Result"].map((label, i) => (
             <div
               key={i}
               className={`conv-progress__step ${i <= step ? "conv-progress__step--active" : ""} ${i === step ? "conv-progress__step--current" : ""}`}

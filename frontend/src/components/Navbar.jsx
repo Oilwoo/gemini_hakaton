@@ -31,16 +31,16 @@ export default function Navbar() {
             </svg>
           </div>
           <span className="navbar__logo-text">
-            FanCam<span className="gradient-text">AI</span>
+            FollowCam<span className="gradient-text">AI</span>
           </span>
         </Link>
 
         <div className="navbar__links">
           {isLanding && (
             <>
-              <a href="#features" className="navbar__link">기능</a>
-              <a href="#how-it-works" className="navbar__link">사용 방법</a>
-              <a href="#future" className="navbar__link">로드맵</a>
+              <a href="#use-cases" className="navbar__link">Use Cases</a>
+              <a href="#features" className="navbar__link">Features</a>
+              <a href="#how-it-works" className="navbar__link">How It Works</a>
             </>
           )}
           <Link
@@ -48,7 +48,7 @@ export default function Navbar() {
             className="btn btn-primary"
             style={{ padding: '10px 24px', fontSize: '0.875rem' }}
           >
-            직캠 만들기
+            Start Editing
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
