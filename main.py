@@ -367,7 +367,14 @@ def render_fancam(
             else:
                 bx, by = (x1 + x2) / 2, (y1 + y2) / 2
                 bw, bh = (x2 - x1) * cfg.margin, (y2 - y1) * cfg.margin
+                
+                # Minimum height bound to prevent excessively zoomed-in crops (e.g. only eyes visible).
+                # The crop should at least cover 35% of the video height (for 9:16) to maintain context.
+                min_h = in_h * 0.35 
+                
                 ch = max(bh, bw / target_aspect)
+                ch = max(ch, min_h) # 안전을 위한 최소 줌 아웃 강제
+                
                 cw = ch * target_aspect
                 cx, cy = bx, by
 
@@ -376,11 +383,12 @@ def render_fancam(
             if k_cx is None:
                 k_cx = Kalman1D(cx)
                 k_cy = Kalman1D(cy)
-                k_cw = Kalman1D(cw)
-                k_ch = Kalman1D(ch)
+                # 줌(크기)는 매우 느리게 적응하도록 노이즈를 적게 설정하여 펌핑 방지
+                k_cw = Kalman1D(cw, process_noise=1e-5, measurement_noise=1.0)
+                k_ch = Kalman1D(ch, process_noise=1e-5, measurement_noise=1.0)
             else:
-                # Limit zoom speed
-                max_zoom = in_w * 0.05
+                # Limit zoom speed per frame strictly
+                max_zoom = in_w * 0.015
                 cw = np.clip(cw, k_cw.kf.statePost[0, 0] - max_zoom, k_cw.kf.statePost[0, 0] + max_zoom)
                 ch = np.clip(ch, k_ch.kf.statePost[0, 0] - max_zoom, k_ch.kf.statePost[0, 0] + max_zoom)
                 
@@ -392,16 +400,19 @@ def render_fancam(
             if ema_cx is None:
                 ema_cx, ema_cy, ema_cw, ema_ch = cx, cy, cw, ch
             else:
-                 # Zoom limit even for EMA
-                max_zoom = in_w * 0.05
+                # Zoom limit strictness
+                max_zoom = in_w * 0.015
                 cw = np.clip(cw, ema_cw - max_zoom, ema_cw + max_zoom)
                 ch = np.clip(ch, ema_ch - max_zoom, ema_ch + max_zoom)
 
                 a = cfg.smooth_alpha
+                # 줌(Zoom) 강도는 카메라 흔들림(Pumping) 방지를 위해 기존 알파보다 훨씬 더 무겁게 고정합니다.
+                zoom_a = max(0.98, a) 
+
                 ema_cx = a * ema_cx + (1 - a) * cx
                 ema_cy = a * ema_cy + (1 - a) * cy
-                ema_cw = a * ema_cw + (1 - a) * cw
-                ema_ch = a * ema_ch + (1 - a) * ch
+                ema_cw = zoom_a * ema_cw + (1 - zoom_a) * cw
+                ema_ch = zoom_a * ema_ch + (1 - zoom_a) * ch
                 cx, cy, cw, ch = ema_cx, ema_cy, ema_cw, ema_ch
 
         # Validate bounds
