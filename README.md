@@ -2,6 +2,8 @@
 **"Gemini의 지능형 공간 이해를 활용한 K-엔터테인먼트 직캠 서비스"**
 **"K-Entertainment Fancam Service Utilizing Gemini's Intelligent Spatial Understanding"**
 
+https://www.youtube.com/watch?v=PDrMctnyLSs&feature=youtu.be
+
 📽️ **[Demo Video 바로가기](https://drive.google.com/file/d/1LjcbgzBlscpz7Ugh1Teh8JfYqaGwlLPO/view)**
 
 > 🏆 **Submission Info**
