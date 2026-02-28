@@ -230,7 +230,7 @@ export default function Converter() {
     setRecommending(true)
     setError("")
     try {
-      const desc = targetDesc || "follow cam target"
+      const desc = targetDesc || "Fan cam target"
       const data = await recommendShortsMeta(desc)
       setShortsTitle(data.title || "")
       setShortsDesc(data.description || "")
@@ -287,7 +287,7 @@ export default function Converter() {
       <div className="conv-step__header">
         <h2 className="conv-step__title">Select a Video</h2>
         <p className="conv-step__desc">
-          Upload a video file or paste a YouTube URL to start your follow-cam edit.
+          Upload a video file or paste a YouTube URL to start your Fan-cam edit.
         </p>
       </div>
 
@@ -520,7 +520,7 @@ export default function Converter() {
           disabled={generating}
           style={{ minWidth: 200 }}
         >
-          {generating ? "Generating..." : "Start Follow Cam"}
+          {generating ? "Generating..." : "Start Fan Cam"}
           {!generating && <ArrowRight />}
         </button>
       </div>
@@ -535,7 +535,7 @@ export default function Converter() {
           <div className="generating-spinner__ring generating-spinner__ring--2" />
           <div className="generating-spinner__core" />
         </div>
-        <h2>Generating AI Follow Cam</h2>
+        <h2>Generating AI Fan Cam</h2>
         <p className="generating-msg">{genMsg}</p>
         <div className="generating-tips">
           <div className="generating-tip glass">
@@ -557,7 +557,7 @@ export default function Converter() {
   const renderStep3 = () => (
     <div className="conv-step fade-in">
       <div className="conv-step__header">
-        <h2 className="conv-step__title gradient-text">Follow Cam Complete!</h2>
+        <h2 className="conv-step__title gradient-text">Fan Cam Complete!</h2>
         <p className="conv-step__desc">
           Compare the result with the original video side by side.
         </p>
@@ -582,7 +582,7 @@ export default function Converter() {
               </div>
               <div>
                 <h3>Upload to YouTube Shorts</h3>
-                <p>Share your follow-cam edit directly to YouTube Shorts</p>
+                <p>Share your Fan-cam edit directly to YouTube Shorts</p>
               </div>
             </div>
 
@@ -607,7 +607,7 @@ export default function Converter() {
                   <input
                     type="text"
                     className="input"
-                    placeholder="e.g. [FollowCam] Player Highlight — Game #Shorts"
+                    placeholder="e.g. [FanCam] Player Highlight — Game #Shorts"
                     value={shortsTitle}
                     onChange={(e) => setShortsTitle(e.target.value)}
                   />
@@ -617,7 +617,7 @@ export default function Converter() {
                   <textarea
                     className="input"
                     rows={3}
-                    placeholder="Add a description and hashtags...&#10;e.g. #Shorts #FollowCam #Highlights"
+                    placeholder="Add a description and hashtags...&#10;e.g. #Shorts #FanCam #Highlights"
                     value={shortsDesc}
                     onChange={(e) => setShortsDesc(e.target.value)}
                     style={{ resize: "vertical", minHeight: 90 }}
@@ -672,7 +672,7 @@ export default function Converter() {
 
           <div className="conv-step__actions" style={{ marginTop: 32 }}>
             <button className="btn btn-secondary" onClick={resetAll}>
-              Create New Follow Cam
+              Create New Fan Cam
             </button>
             {result.json_url && (
               <a

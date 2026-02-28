@@ -31,7 +31,7 @@ export default function Navbar() {
             </svg>
           </div>
           <span className="navbar__logo-text">
-            FollowCam<span className="gradient-text">AI</span>
+            FanCam<span className="gradient-text">AI</span>
           </span>
         </Link>
 

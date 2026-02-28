@@ -15,14 +15,14 @@ const IconDrone = () => (<svg width="48" height="48" viewBox="0 0 24 24" fill="n
 
 const FEATURES = [
   { icon: <IconTarget />, title: 'AI Object Tracking', desc: 'Google Gemini Vision AI precisely tracks any target in your video frame by frame — people, athletes, or animals.', color: '#8b5cf6' },
-  { icon: <IconZap />, title: 'One-Click Follow Cam', desc: 'Automatically generate a follow-cam edit with a single click. Auto-crop, stabilize, and reframe — all handled by AI.', color: '#3b82f6' },
+  { icon: <IconZap />, title: 'One-Click Fan Cam', desc: 'Automatically generate a Fan-cam edit with a single click. Auto-crop, stabilize, and reframe — all handled by AI.', color: '#3b82f6' },
   { icon: <IconShare />, title: 'Export & Share Instantly', desc: 'Download your edited video or upload directly to YouTube Shorts in seconds.', color: '#06b6d4' },
 ];
 
 const STEPS = [
   { num: '01', icon: <IconUpload />, title: 'Upload Video', desc: 'Paste a YouTube URL or upload a video file directly from your device.' },
-  { num: '02', icon: <IconTarget />, title: 'Select Target', desc: 'Click on the subject you want to follow in the video frame — a person, player, or any moving object.' },
-  { num: '03', icon: <IconCamera />, title: 'AI Follow Cam', desc: 'Gemini AI tracks the target frame-by-frame and generates a smooth, professional follow-cam edit.' },
+  { num: '02', icon: <IconTarget />, title: 'Select Target', desc: 'Click on the subject you want to Fan in the video frame — a person, player, or any moving object.' },
+  { num: '03', icon: <IconCamera />, title: 'AI Fan Cam', desc: 'Gemini AI tracks the target frame-by-frame and generates a smooth, professional Fan-cam edit.' },
   { num: '04', icon: <IconPlay />, title: 'Review & Share', desc: 'Compare the result with the original and export to YouTube Shorts or download.' },
 ];
 
@@ -37,7 +37,7 @@ const USE_CASES = [
   },
   {
     icon: <IconSports />,
-    title: 'Sports Follow Cam',
+    title: 'Sports Fan Cam',
     desc: 'Track a specific player on the field — soccer, basketball, baseball, or any sport. Generate highlight reels focused on one athlete.',
     gradient: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
     tag: 'New',
@@ -45,7 +45,7 @@ const USE_CASES = [
   },
   {
     icon: <IconHorse />,
-    title: 'Horse Racing Follow',
+    title: 'Horse Racing Fan',
     desc: 'Lock onto a specific horse and jockey throughout the race. Perfect for race analysis, replays, and highlight clips.',
     gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)',
     tag: 'Coming Soon',
@@ -154,9 +154,9 @@ export default function Landing() {
           <div className="hero__badge"><span className="hero__badge-dot" />Powered by Google Gemini AI</div>
           <h1 className="hero__title">
             <span className="hero__title-line">Automate Video Editing</span>
-            <span className="hero__title-line hero__title-line--accent">with <span className="gradient-text">AI Follow Cam</span></span>
+            <span className="hero__title-line hero__title-line--accent">with <span className="gradient-text">AI Fan Cam</span></span>
           </h1>
-          <p className="hero__subtitle">Upload any video, click a target, and let AI automatically<br />track, crop, and generate a professional follow-cam edit.</p>
+          <p className="hero__subtitle">Upload any video, click a target, and let AI automatically<br />track, crop, and generate a professional Fan-cam edit.</p>
           <div className="hero__actions">
             <Link to="/converter" className="btn btn-primary btn-lg">Get Started <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link>
             <a href="#use-cases" className="btn btn-secondary btn-lg">See Use Cases</a>
@@ -164,11 +164,11 @@ export default function Landing() {
         </div>
         <div className="hero__visual">
           <div className="hero__mockup">
-            <div className="hero__mockup-header"><div className="hero__mockup-dots"><span /><span /><span /></div><span className="hero__mockup-title">FollowCam AI — Video Editor</span></div>
+            <div className="hero__mockup-header"><div className="hero__mockup-dots"><span /><span /><span /></div><span className="hero__mockup-title">FanCam AI — Video Editor</span></div>
             <div className="hero__mockup-body">
               <div className="hero__mockup-left"><div className="hero__mockup-video-placeholder"><div className="hero__mockup-scan-line" /><div className="hero__mockup-target-box" /><span>Source Video</span></div></div>
               <div className="hero__mockup-arrow"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{color:'var(--accent-purple)'}}><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
-              <div className="hero__mockup-right"><div className="hero__mockup-result-placeholder"><span>AI Follow Cam</span></div></div>
+              <div className="hero__mockup-right"><div className="hero__mockup-result-placeholder"><span>AI Fan Cam</span></div></div>
             </div>
           </div>
         </div>
@@ -181,7 +181,7 @@ export default function Landing() {
             <div className="section__header">
               <span className="section__label gradient-text">Use Cases</span>
               <h2 className="section__title">One Engine, Endless Possibilities</h2>
-              <p className="section__desc">AI-powered Follow Cam editing works across industries — from entertainment to sports to surveillance.</p>
+              <p className="section__desc">AI-powered Fan Cam editing works across industries — from entertainment to sports to surveillance.</p>
             </div>
           </RevealSection>
 
@@ -218,21 +218,21 @@ export default function Landing() {
 
       <section className="section" id="features">
         <div className="section__container">
-          <RevealSection><div className="section__header"><span className="section__label gradient-text">Features</span><h2 className="section__title">Why FollowCam AI?</h2><p className="section__desc">Powered by Gemini Vision AI, anyone can create professional-grade follow-cam edits in minutes.</p></div></RevealSection>
+          <RevealSection><div className="section__header"><span className="section__label gradient-text">Features</span><h2 className="section__title">Why FanCam AI?</h2><p className="section__desc">Powered by Gemini Vision AI, anyone can create professional-grade Fan-cam edits in minutes.</p></div></RevealSection>
           <div className="features-grid">{FEATURES.map((f, i) => (<RevealSection key={i} delay={i * 0.12}><div className="feature-card glass"><div className="feature-card__icon" style={{ color: f.color, borderColor: `${f.color}33`, background: `${f.color}11` }}>{f.icon}</div><h3 className="feature-card__title">{f.title}</h3><p className="feature-card__desc">{f.desc}</p></div></RevealSection>))}</div>
         </div>
       </section>
 
       <section className="section" id="how-it-works">
         <div className="section__container">
-          <RevealSection><div className="section__header"><span className="section__label gradient-text">How It Works</span><h2 className="section__title">4 Simple Steps to a Follow Cam</h2><p className="section__desc">No complex editing software required — just a few clicks and AI does the rest.</p></div></RevealSection>
+          <RevealSection><div className="section__header"><span className="section__label gradient-text">How It Works</span><h2 className="section__title">4 Simple Steps to a Fan Cam</h2><p className="section__desc">No complex editing software required — just a few clicks and AI does the rest.</p></div></RevealSection>
           <div className="steps">{STEPS.map((s, i) => (<RevealSection key={i} delay={i * 0.1} direction="left"><div className="step-item"><div className="step-item__num">{s.num}</div><div className="step-item__content glass"><div className="step-item__icon">{s.icon}</div><h3>{s.title}</h3><p>{s.desc}</p></div></div></RevealSection>))}</div>
         </div>
       </section>
 
       <section className="section"><div className="section__container"><RevealSection><div className="cta"><div className="cta__bg" /><div className="cta__content"><h2>Ready to Automate Your Video Editing?</h2><p>All you need is a video URL or file. Start for free — no editing skills required.</p><Link to="/converter" className="btn btn-primary btn-lg">Start Editing <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></Link></div></div></RevealSection></div></section>
 
-      <footer className="footer"><div className="footer__inner"><span className="footer__logo gradient-text">FollowCam AI</span><span className="footer__copy">Built with Google Gemini &middot; Hackathon 2026</span></div></footer>
+      <footer className="footer"><div className="footer__inner"><span className="footer__logo gradient-text">FanCam AI</span><span className="footer__copy">Built with Google Gemini &middot; Hackathon 2026</span></div></footer>
 
       <style>{`
         .landing { overflow-x: hidden; }
