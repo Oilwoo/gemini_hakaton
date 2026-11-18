@@ -26,7 +26,11 @@ venv: $(VENV)/bin/activate
 install: venv
 	$(PIP) install -r requirements.txt
 
-run: venv
+build-ui:
+	@echo "Building frontend with npm..."
+	cd frontend && npm install && npm run build
+
+run: venv build-ui
 	@echo "Killing any process on port 7860..."
 	@lsof -t -i:7860 | xargs kill -9 || true
 	$(PYTHON) main.py

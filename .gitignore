@@ -51,8 +51,15 @@ venv.bak/
 *.png
 temp/
 outputs/
+data/
 *.log
 .gemini/
 
+# Frontend
+frontend/dist/
+frontend/node_modules/
+
 credentials.json
 token.pickle
+frontend/node_modules/.vite/
+cookies.txt

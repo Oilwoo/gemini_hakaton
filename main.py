@@ -42,7 +42,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger("main")
-logger.info("서버가 시작되었습니다.")
+logger.info("Fancam AI Server Started.")
 
 # -----------------------------
 # YouTube Downloader
@@ -51,17 +51,36 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
     if not url.strip():
         return ""
     import yt_dlp
-    
+    from youtube_pw_downloader import extract_youtube_cookies_via_playwright
+
     # 해상도 설정
+    # NOTE: OpenCV는 AV1(av01) 코덱을 지원하지 않으므로 명시적으로 제외합니다.
+    #   1순위: H.264(avc) + AAC  → 가장 호환성이 높음
+    #   2순위: AV1 제외 mp4      → H.264가 없을 때 차선책
+    #   3순위: 일반 best         → 최후 fallback
     if res == "1080p":
-        format_str = "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best"
+        format_str = (
+            "bestvideo[height<=1080][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[height<=1080][ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best[height<=1080][ext=mp4]"
+            "/best"
+        )
     elif res == "720p":
-        format_str = "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720][ext=mp4]/best"
+        format_str = (
+            "bestvideo[height<=720][ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[height<=720][ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best[height<=720][ext=mp4]"
+            "/best"
+        )
     else:
-        format_str = "best"
+        format_str = (
+            "bestvideo[ext=mp4][vcodec^=avc]+bestaudio[ext=m4a]"
+            "/bestvideo[ext=mp4][vcodec!*=av01]+bestaudio[ext=m4a]"
+            "/best"
+        )
 
     out_tmpl = os.path.join(out_dir, "yt_downloaded_%(id)s.%(ext)s")
-    
+
     def my_hook(d):
         if d['status'] == 'downloading':
             total = d.get('total_bytes') or d.get('total_bytes_estimate', 0)
@@ -72,6 +91,16 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
             if progress is not None:
                 progress(1.0, desc="다운로드 완료! 후처리(병합) 중...")
 
+    # ─── 봇 감지 우회 전략 ────────────────────────────────────────────────
+    # player_client 우선순위:
+    #   tv_embedded → mediaconnect → android → ios → web
+    # 로그인 없이도 bot 감지를 우회할 수 있는 클라이언트를 순서대로 시도합니다.
+    #
+    # 쿠키(cookies.txt)는 로그인된 세션 쿠키가 있을 때만 효과가 있습니다.
+    # Playwright로 추출한 익명 쿠키는 인증에 불충분하므로 사용하지 않습니다.
+    # 정적 cookies.txt(수동 추출)는 보조 수단으로만 사용합니다.
+    # ─────────────────────────────────────────────────────────────────────
+
     ydl_opts = {
         'format': format_str,
         'outtmpl': out_tmpl,
@@ -79,8 +108,24 @@ def download_youtube_video(url: str, res: str = "720p", out_dir: str = ".", prog
         'ffmpeg_location': imageio_ffmpeg.get_ffmpeg_exe(),
         'quiet': True,
         'noprogress': True,
-        'progress_hooks': [my_hook]
+        'progress_hooks': [my_hook],
+        # 봇 감지 우회: 여러 player_client를 순서대로 시도
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['tv_embedded', 'mediaconnect', 'android', 'ios', 'web'],
+            }
+        },
     }
+
+    # 보조: 정적 cookies.txt (수동으로 로그인 쿠키를 추출했을 때만 유효)
+    static_cookie = os.environ.get("COOKIES_PATH", "cookies.txt")
+    if not os.path.isabs(static_cookie):
+        static_cookie = os.path.join(os.getcwd(), static_cookie)
+    if os.path.exists(static_cookie) and os.path.getsize(static_cookie) > 0:
+        logger.info(f"정적 cookies.txt 사용 (보조): {static_cookie}")
+        ydl_opts['cookiefile'] = static_cookie
+    else:
+        logger.info("정적 cookies.txt 없음. player_client 우회 방식만 사용합니다.")
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
@@ -659,6 +704,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://localhost:7860",
         "http://127.0.0.1:7860",
+        "http://fancam-ai.kro.kr",
         "*"
     ],
     allow_credentials=True,
@@ -666,15 +712,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 폴더 설정
-api_temp_dir = Path(tempfile.gettempdir()) / "gemini_fancam_api"
-api_temp_dir.mkdir(exist_ok=True)
-UPLOADS_DIR = api_temp_dir / "uploads"
-UPLOADS_DIR.mkdir(exist_ok=True)
-OUTPUTS_DIR = api_temp_dir / "outputs"
-OUTPUTS_DIR.mkdir(exist_ok=True)
+# 폴더 설정 (Docker 환경을 고려하여 고정 경로 우선, 없으면 temp 사용)
+DOCKER_DATA_DIR = Path("/app/data")
+if DOCKER_DATA_DIR.exists():
+    UPLOADS_DIR = DOCKER_DATA_DIR / "uploads"
+    OUTPUTS_DIR = DOCKER_DATA_DIR / "outputs"
+else:
+    api_temp_dir = Path(tempfile.gettempdir()) / "gemini_fancam_api"
+    UPLOADS_DIR = api_temp_dir / "uploads"
+    OUTPUTS_DIR = api_temp_dir / "outputs"
 
-# 프론트엔드 폴더 (빌드된 React SPA를 서빙, 없으면 소스 폴더 fallback)
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+
+# 프론트엔드 폴더 (빌드된 React SPA dist를 우선 서빙)
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
 FRONTEND_SRC = BASE_DIR / "frontend"
@@ -866,7 +917,7 @@ async def api_youtube_recommend(req: RecommendRequest):
         prompt = f"""
         The user is uploading a video of a person/object described as: "{req.target_description}".
         This is for a YouTube Shorts (9:16) video generated by AI.
-        Recommend a catchy YouTube Shorts title (max 100 chars) and a description (including relevant hashtags like #Shorts, #Fancam, #GeminiAI).
+        Recommend a catchy YouTube Shorts title (max 100 chars) and a description (including relevant hashtags like #Shorts, #Fancam, #GeminiAI, #GoogleDeepMind).
         Output the result in JSON format with exactly two keys: "title" and "description".
         Keep the language natural and consistent with the input description's language (if Korean, use Korean).
         """

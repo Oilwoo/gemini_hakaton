@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+
+# Python
+venv
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment
+.env
+
+# Media & Temp
+*.mp4
+*.mkv
+*.webm
+*.jpg
+*.png
+temp/
+gemini_hakaton2.zip
+c:/
+
+# Secrets & Tokens
+credentials.json
+token.pickle
+cookies.txt
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/package-lock.json

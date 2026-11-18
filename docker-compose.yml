@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    container_name: gemini-fancam
+    ports:
+      - "7860:7860"
+    env_file:
+      - .env
+    volumes:
+      - ./credentials.json:/app/credentials.json
+      - ./token.pickle:/app/token.pickle
+      - ./cookies.txt:/app/cookies.txt
+      - ./data:/app/data
+    # Playwright headless Chromium은 /dev/shm을 대량 사용합니다.
+    # 기본값(64m) 부족 시 Chromium이 크래시하므로 256m으로 증가합니다.
+    shm_size: '256m'
+    restart: unless-stopped
+
+networks:
+  default:
+    name: gemini-fancam-network
